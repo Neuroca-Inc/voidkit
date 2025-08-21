@@ -1,0 +1,20 @@
+# voidkit advanced math library
+numpy # For numerical computations
+networkx # For graph operations
+matplotlib # For plotting and visualizations
+tqdm # For progress bars
+scipy # For sparse matrix operations
+ripser # For TDA computations
+imageio # For saving visualizations as GIFs
+torch # For deep learning model
+opencv-python # For image processing
+librosa # For audio processing
+persim # For persistent homology computations
+h5py # For saving the VDM's brain
+plotly # For interactive visualizations
+dash # For web-based visualizations
+redis # For Redis integration
+statsmodels # For statistical models
+
+# Testing
+pytest

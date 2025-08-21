@@ -1,0 +1,88 @@
+﻿# PEP 621-compliant project metadata and build configuration
+
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "voidkit"
+version = "0.1.0"
+description = "Unified Void Dynamics Model (VDM) toolkit for void dynamics: REVGSP, SIE, TDA, and related formulas."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+# Populated by metadata hook or update script
+dynamic = ["dependencies", "authors", "urls"]
+keywords = ["VDM", "Unified Void Dynamics Model", "void dynamics", "REVGSP", "SIE", "TDA", "mathematics", "physics", "modeling"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.scripts]
+voidkit-apply-revgsp = "voidkit.void_dynamics.apply_revgsp:main"
+voidkit-revgsp = "voidkit.void_dynamics.revgsp_formulas:main"
+voidkit-sie = "voidkit.void_dynamics.sie_formulas:main"
+voidkit-tda = "voidkit.void_dynamics.tda_formulas:main"
+voidkit-stats = "voidkit.advanced_math.calculate_descriptive_stats:main"
+voidkit-diff = "voidkit.advanced_math.symbolic_differentiation:main"
+
+[project.optional-dependencies]
+# Optional extras (not installed by default)
+symbolic = ["sympy>=1.12"]
+
+[project.entry-points."hatch.metadata.hooks"]
+voidkit-metadata = "tools.metadata_hooks:VoidkitMetadataHook"
+
+[tool.hatch.build]
+# Include only package and essential files
+include = [
+  "voidkit/**",
+  "tools/metadata_hooks.py",
+  "README.md",
+  "LICENSE",
+]
+# Exclude any stray/legacy modules that should not ship
+exclude = [
+  "voidkit/symbolic_differentiation.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["voidkit"]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.hatch.envs.default]
+dependencies = [
+  "black>=24.0.0",
+  "ruff>=0.5.0",
+  "mypy>=1.10.0",
+  "pytest>=7.0",
+]
