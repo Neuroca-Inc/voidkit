@@ -11,8 +11,16 @@ description = "Unified Void Dynamics Model (VDM) toolkit for void dynamics: REVG
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
+dependencies = [
+    "numpy>=1.20.0",
+    "scipy>=1.7.0",
+]
+authors = [
+    { name = "Justin K. Lietz", email = "justin@neuroca.com" }
+]
+urls = { homepage = "https://github.com/justinlietz93/voidkit" }
 # Populated by metadata hook or update script
-dynamic = ["dependencies", "authors", "urls"]
+dynamic = []  # ["dependencies", "authors", "urls"]
 keywords = ["VDM", "Unified Void Dynamics Model", "void dynamics", "REVGSP", "SIE", "TDA", "mathematics", "physics", "modeling"]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -36,8 +44,8 @@ voidkit-diff = "voidkit.advanced_math.symbolic_differentiation:main"
 # Optional extras (not installed by default)
 symbolic = ["sympy>=1.12"]
 
-[project.entry-points."hatch.metadata.hooks"]
-voidkit-metadata = "tools.metadata_hooks:VoidkitMetadataHook"
+# [project.entry-points."hatch.metadata.hooks"]
+# voidkit-metadata = "tools.metadata_hooks:VoidkitMetadataHook"
 
 [tool.hatch.build]
 # Include only package and essential files

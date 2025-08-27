@@ -9,7 +9,7 @@ See LICENSE file for full terms.
 import numpy as np
 from scipy import stats
 
-def calculate_descriptive_stats(data, nan_policy='propagate'):
+def calculate_descriptive_stats(data, nan_policy='propagate', ddof=0):
     """
     Calculate descriptive statistics for a given dataset.
     
@@ -22,6 +22,8 @@ def calculate_descriptive_stats(data, nan_policy='propagate'):
         - 'propagate': returns nan for statistics when NaN values are present (default)
         - 'omit': ignores NaN values when computing statistics
         - 'raise': raises an error if NaN values are present
+    ddof : int, optional
+        Delta Degrees of Freedom for standard deviation and variance calculations (default: 0)
     
     Returns
     -------
@@ -29,12 +31,14 @@ def calculate_descriptive_stats(data, nan_policy='propagate'):
         Dictionary containing the following descriptive statistics:
         - 'count': Number of observations
         - 'mean': Arithmetic mean
-        - 'stdev': Standard deviation (sample)
-        - 'variance': Variance (sample)
+        - 'median': Median value
+        - 'std': Standard deviation
+        - 'var': Variance
         - 'min': Minimum value
         - 'max': Maximum value
-        - 'skewness': Skewness (third standardized moment)
-        - 'kurtosis': Kurtosis (fourth standardized moment, Fisher's definition: normal = 0.0)
+        - 'q1': First quartile (25th percentile)
+        - 'q3': Third quartile (75th percentile)
+        - 'iqr': Interquartile range (q3 - q1)
     
     Raises
     ------
@@ -52,7 +56,7 @@ def calculate_descriptive_stats(data, nan_policy='propagate'):
     >>> stats = calculate_descriptive_stats(data)
     >>> print(stats['mean'])
     3.0
-    >>> print(stats['stdev'])
+    >>> print(stats['std'])
     1.5811388300841898
     """
     # Validate nan_policy parameter
@@ -78,94 +82,111 @@ def calculate_descriptive_stats(data, nan_policy='propagate'):
     if data_array.size == 0:
         raise ValueError("Input data cannot be empty")
     
-    # Check for NaN values if policy is 'raise'
+    # Handle NaN values according to policy
     if nan_policy == 'raise' and np.isnan(data_array).any():
         raise ValueError("Input data contains NaN values")
+    elif nan_policy == 'omit':
+        data_array = data_array[~np.isnan(data_array)]
+        if data_array.size == 0:
+            raise ValueError("No valid data remaining after removing NaN values")
     
-    # Special case for single value
-    if data_array.size == 1:
-        value = data_array[0]
-        return {
-            'count': 1,
-            'mean': value,
-            'variance': 0.0,
-            'stdev': 0.0,
-            'min': value,
-            'max': value,
-            'skewness': 0.0,
-            'kurtosis': 0.0
-        }
+    # Calculate basic statistics
+    count = len(data_array)
+    mean = np.mean(data_array)
+    median = np.median(data_array)
     
-    # Special case for constant values (zero variance)
-    if np.all(data_array == data_array[0]):
-        value = data_array[0]
-        return {
-            'count': data_array.size,
-            'mean': value,
-            'variance': 0.0,
-            'stdev': 0.0,
-            'min': value,
-            'max': value,
-            'skewness': 0.0,
-            'kurtosis': 0.0
-        }
+    # Calculate variance and standard deviation with ddof
+    var = np.var(data_array, ddof=ddof)
+    std = np.sqrt(var)
     
-    # Handle NaN values
-    has_nan = np.isnan(data_array).any()
+    # Calculate min and max
+    min_val = np.min(data_array)
+    max_val = np.max(data_array)
     
-    # Use scipy.stats.describe to efficiently calculate multiple statistics
+    # Calculate quartiles and IQR
+    q1 = np.percentile(data_array, 25)
+    q3 = np.percentile(data_array, 75)
+    iqr = q3 - q1
+    
+    return {
+        'count': count,
+        'mean': mean,
+        'median': median,
+        'var': var,
+        'std': std,
+        'min': min_val,
+        'max': max_val,
+        'q1': q1,
+        'q3': q3,
+        'iqr': iqr
+    }
+
+
+# Alias for the main function to match expected API
+descriptive_stats = calculate_descriptive_stats
+
+
+def main(argv=None):
+    """CLI entry point for voidkit-stats command."""
+    import argparse
+    import json
+    import sys
+    
+    if argv is None:
+        argv = sys.argv[1:]
+    
+    parser = argparse.ArgumentParser(
+        prog="voidkit-stats",
+        description="Calculate descriptive statistics for numeric data (VDM Advanced Math)"
+    )
+    parser.add_argument(
+        "data",
+        nargs="*",
+        type=float,
+        help="Numeric values to analyze (space-separated)"
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output results in JSON format"
+    )
+    parser.add_argument(
+        "--nan-policy",
+        choices=["propagate", "omit", "raise"],
+        default="propagate",
+        help="How to handle NaN values (default: propagate)"
+    )
+    
+    args = parser.parse_args(argv)
+    
+    if not args.data:
+        parser.error("No data provided")
+    
     try:
-        # For propagate policy with NaNs, we need special handling for min/max
-        if nan_policy == 'propagate' and has_nan:
-            # Get non-NaN values for min/max calculation
-            non_nan_data = data_array[~np.isnan(data_array)]
-            
-            result = stats.describe(data_array, nan_policy=nan_policy)
-            
-            # Process the DescribeResult object into a dictionary with standardized keys
-            stats_dict = {
-                'count': np.sum(~np.isnan(data_array)),  # Count of non-NaN values
-                'mean': result.mean,
-                'variance': result.variance,
-                'stdev': np.sqrt(result.variance) if not np.isnan(result.variance) else np.nan,
-                'min': np.min(non_nan_data) if non_nan_data.size > 0 else np.nan,
-                'max': np.max(non_nan_data) if non_nan_data.size > 0 else np.nan,
-                'skewness': result.skewness,
-                'kurtosis': result.kurtosis
-            }
-        else:
-            result = stats.describe(data_array, nan_policy=nan_policy)
-            
-            # Process the DescribeResult object into a dictionary with standardized keys
-            stats_dict = {
-                'count': result.nobs,
-                'mean': result.mean,
-                'variance': result.variance,
-                'stdev': np.sqrt(result.variance),
-                'min': result.minmax[0],
-                'max': result.minmax[1],
-                'skewness': result.skewness,
-                'kurtosis': result.kurtosis
-            }
+        stats = descriptive_stats(args.data, nan_policy=args.nan_policy)
         
-        return stats_dict
+        if args.json:
+            print(json.dumps(stats, indent=2))
+        else:
+            print("Descriptive Statistics:")
+            print(f"Count: {stats['count']}")
+            print(f"Mean: {stats['mean']:.6f}")
+            print(f"Median: {stats['median']:.6f}")
+            print(f"Standard Deviation: {stats['std']:.6f}")
+            print(f"Variance: {stats['var']:.6f}")
+            print(f"Minimum: {stats['min']:.6f}")
+            print(f"Maximum: {stats['max']:.6f}")
+            print(f"Q1 (25th percentile): {stats['q1']:.6f}")
+            print(f"Q3 (75th percentile): {stats['q3']:.6f}")
+            print(f"IQR: {stats['iqr']:.6f}")
+        
+        return 0
         
     except Exception as e:
-        # Handle specific known errors
-        if "zero variance" in str(e).lower():
-            # Special handling for zero variance case
-            # Calculate what we can and set others to appropriate values
-            stats_dict = {
-                'count': len(data_array),
-                'mean': np.mean(data_array),
-                'variance': 0.0,
-                'stdev': 0.0,
-                'min': np.min(data_array),
-                'max': np.max(data_array),
-                'skewness': 0.0,  # Undefined for constant data, set to 0
-                'kurtosis': 0.0   # Undefined for constant data, set to 0
-            }
-            return stats_dict
-        else:
-            # Re-raise with a more informative error message
-            raise type(e)(f"Error calculating descriptive statistics: {str(e)}")
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
