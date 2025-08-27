@@ -16,7 +16,7 @@ dependencies = [
     "scipy>=1.7.0",
 ]
 authors = [
-    { name = "Justin K. Lietz", email = "justin@neuroca.com" }
+    { name = "Justin K. Lietz", email = "justin@neuroca.dev" }
 ]
 urls = { homepage = "https://github.com/justinlietz93/voidkit" }
 # Populated by metadata hook or update script
