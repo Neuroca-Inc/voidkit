@@ -1,4 +1,4 @@
-﻿# PEP 621-compliant project metadata and build configuration
+# PEP 621-compliant project metadata and build configuration
 
 [build-system]
 requires = ["hatchling>=1.25.0"]
