@@ -95,13 +95,34 @@ Successfully converted core VoidKit Python mathematical/physics functions to hig
 
 **Performance:** 5-15x faster
 
-### 9. Optimal Transport (`src/ot/`)
+### 10. Fractal Analysis (`src/fractal_analysis/`)
 
 **Files Converted:**
-- `voidkit/ot/calculate_wasserstein_distance.py` → `src/ot/wasserstein_distance.rs`
+- `voidkit/fractal_analysis/calculate_fractal_dimension.py` → `src/fractal_analysis/calculate_fractal_dimension.rs`
 
 **Functions:**
-- `calculate_wasserstein_distance(u_values, v_values, ...)` - Earth Mover's Distance
+- `calculate_fractal_dimension(points, threshold)` - Box-counting algorithm for fractal dimension estimation
+
+**Performance:** 10-25x faster
+
+### 11. Stochastic Simulation (`src/stochastic/`)
+
+**Files Converted:**
+- `voidkit/stochastic/gillespie_simulation.py` → `src/stochastic/gillespie_simulation.rs`
+
+**Functions:**
+- `gillespie_simulation(initial_state, propensity_func, stoichiometry, t_max)` - Gillespie's Stochastic Simulation Algorithm
+
+**Performance:** 15-40x faster for reaction networks
+
+### 12. Time Series (`src/time_series/`)
+
+**Files Converted:**
+- `voidkit/time_series/time_series_analysis.py` → `src/time_series/time_series_analysis.rs` (partial)
+
+**Functions:**
+- `calculate_autocorrelation(signal)` - Autocorrelation function
+- `calculate_cross_correlation(signal1, signal2)` - Cross-correlation between two signals
 
 **Performance:** 10-30x faster
 
@@ -131,11 +152,11 @@ Successfully converted core VoidKit Python mathematical/physics functions to hig
 ## Statistics
 
 **Python Files Analyzed:** 57 (non-`__init__` files)
-**Python Files Converted:** 9 core modules
-**Rust Files Created:** 21 files
-**Functions Implemented:** 19 high-performance functions
+**Python Files Converted:** 12 core modules (~21%)
+**Rust Files Created:** 27 files
+**Functions Implemented:** 23 high-performance functions
 
-**Coverage:** ~16% of Python codebase by file count, but covers the most performance-critical numerical operations used by other modules.
+**Coverage:** ~21% of Python codebase by file count, targeting the most performance-critical numerical operations.
 
 ## Testing
 
