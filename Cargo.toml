@@ -1,0 +1,28 @@
+[package]
+name = "voidkit_rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Justin K. Lietz <justin@neuroca.dev>"]
+description = "High-performance Rust implementation of VoidKit math/physics library"
+license = "SEE LICENSE IN LICENSE"
+
+[lib]
+name = "voidkit_rust"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# PyO3 for Python bindings
+pyo3 = { version = "0.22", features = ["extension-module"] }
+numpy = "0.22"
+
+# Math and scientific computing
+nalgebra = "0.33"  # Linear algebra
+ndarray = "0.16"   # N-dimensional arrays
+num-traits = "0.2"
+
+# Numerical methods
+peroxide = "0.37"  # ODE solvers, integration
+approx = "0.5"     # Floating point comparisons
+
+[dev-dependencies]
+criterion = "0.5"  # Benchmarking
