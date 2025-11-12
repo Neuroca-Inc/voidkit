@@ -22,6 +22,7 @@ pub mod fractal_analysis;
 pub mod stochastic;
 pub mod time_series;
 pub mod sde;
+pub mod evolutionary;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -95,6 +96,10 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // SDE solver
     m.add_function(wrap_pyfunction!(sde::sde_solver::sde_solver, m)?)?;
+    
+    // Evolutionary algorithms
+    m.add_function(wrap_pyfunction!(evolutionary::apply_mutation::apply_mutation, m)?)?;
+    m.add_function(wrap_pyfunction!(evolutionary::apply_recombination::apply_recombination, m)?)?;
     
     Ok(())
 }
