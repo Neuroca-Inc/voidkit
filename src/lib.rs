@@ -20,6 +20,7 @@ pub mod soc_analysis;
 pub mod ot;
 pub mod fractal_analysis;
 pub mod stochastic;
+pub mod time_series;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -63,6 +64,10 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // Stochastic simulation
     m.add_function(wrap_pyfunction!(stochastic::gillespie_simulation::gillespie_simulation, m)?)?;
+    
+    // Time series
+    m.add_function(wrap_pyfunction!(time_series::time_series_analysis::calculate_autocorrelation, m)?)?;
+    m.add_function(wrap_pyfunction!(time_series::time_series_analysis::calculate_cross_correlation, m)?)?;
     
     Ok(())
 }
