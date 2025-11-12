@@ -12,7 +12,7 @@ See LICENSE file for full terms.
 //! Detects neuronal avalanches from spike trains.
 
 use pyo3::prelude::*;
-use numpy::PyReadonlyArray1;
+use numpy::{PyReadonlyArray1, PyArrayMethods};
 use std::collections::HashMap;
 
 /// Detects neuronal avalanches from a spike train.
@@ -108,7 +108,7 @@ mod tests {
             // Avalanche 1: spikes at 1.5, 2.5 (bin 1, 2) -> size=2, duration=2
             // Gap at bin 3
             // Avalanche 2: spikes at 4.5, 5.5, 6.5 (bin 4, 5, 6) -> size=3, duration=3
-            let spikes = vec![1.5, 2.5, 4.5, 5.5, 6.5];
+            let spikes: Vec<f64> = vec![1.5, 2.5, 4.5, 5.5, 6.5];
             let spikes_py = numpy::PyArray1::from_vec_bound(py, spikes);
             
             let result = detect_neuronal_avalanches(spikes_py.readonly(), 1.0).unwrap();
@@ -129,7 +129,7 @@ mod tests {
         pyo3::prepare_freethreaded_python();
         
         Python::with_gil(|py| {
-            let spikes = vec![];
+            let spikes: Vec<f64> = vec![];
             let spikes_py = numpy::PyArray1::from_vec_bound(py, spikes);
             
             let result = detect_neuronal_avalanches(spikes_py.readonly(), 1.0).unwrap();

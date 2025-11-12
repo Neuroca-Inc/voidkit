@@ -12,7 +12,7 @@ See LICENSE file for full terms.
 //! Generates spike trains based on fractal dynamics.
 
 use pyo3::prelude::*;
-use numpy::{PyArray1};
+use numpy::{PyArray1, PyReadonlyArray1, PyArrayMethods};
 use rand::thread_rng;
 use rand::Rng;
 

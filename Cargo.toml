@@ -10,9 +10,13 @@ license = "SEE LICENSE IN LICENSE"
 name = "voidkit_rust"
 crate-type = ["cdylib", "rlib"]
 
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]
+
 [dependencies]
 # PyO3 for Python bindings
-pyo3 = { version = "0.22", features = ["extension-module"] }
+pyo3 = "0.22"
 numpy = "0.22"
 
 # Math and scientific computing

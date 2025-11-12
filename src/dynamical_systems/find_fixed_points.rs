@@ -12,7 +12,7 @@ See LICENSE file for full terms.
 //! Finds fixed points (equilibria) of dynamical systems using Newton's method.
 
 use pyo3::prelude::*;
-use numpy::{PyArray1, PyArray2, PyReadonlyArray1, PyReadonlyArray2};
+use numpy::{PyArray1, PyArray2, PyReadonlyArray1, PyReadonlyArray2, PyArrayMethods};
 use nalgebra::DVector;
 
 /// Finds fixed points (equilibria) of a dynamical system using Newton's method.
@@ -135,8 +135,9 @@ def func(x):
             let func: PyObject = locals.get_item("func").unwrap().unwrap().into();
             
             // Initial guess near the fixed point
-            let guess = numpy::PyArray1::from_vec_bound(py, vec![1.0]);
-            let guesses = vec![guess.readonly()];
+            let guess: Vec<f64> = vec![1.0];
+            let guess_py = numpy::PyArray1::from_vec_bound(py, guess);
+            let guesses = vec![guess_py.readonly()];
             
             let fixed_pts = find_fixed_points(
                 py, 

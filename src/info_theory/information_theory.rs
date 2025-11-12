@@ -234,7 +234,7 @@ mod tests {
     fn test_entropy_uniform() {
         // Uniform distribution should have maximum entropy
         // H = log2(n) for uniform over n outcomes
-        let pk = vec![0.25, 0.25, 0.25, 0.25];
+        let pk: Vec<f64> = vec![0.25, 0.25, 0.25, 0.25];
         let log_base = 2.0_f64.ln();
         
         let mut entropy = 0.0;
@@ -248,7 +248,7 @@ mod tests {
     #[test]
     fn test_entropy_certain() {
         // Certain event should have zero entropy
-        let pk = vec![1.0, 0.0, 0.0, 0.0];
+        let pk: Vec<f64> = vec![1.0, 0.0, 0.0, 0.0];
         let log_base = 2.0_f64.ln();
         
         let mut entropy = 0.0;
@@ -264,7 +264,7 @@ mod tests {
     #[test]
     fn test_kl_divergence_identical() {
         // KL(P || P) should be 0
-        let p = vec![0.5, 0.3, 0.2];
+        let p: Vec<f64> = vec![0.5, 0.3, 0.2];
         let log_base = 2.0_f64.ln();
         
         let mut kl = 0.0;
