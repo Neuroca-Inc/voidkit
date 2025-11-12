@@ -23,6 +23,7 @@ num-traits = "0.2"
 # Numerical methods
 peroxide = "0.37"  # ODE solvers, integration
 approx = "0.5"     # Floating point comparisons
+rand = "0.8"       # Random number generation
 
 [dev-dependencies]
 criterion = "0.5"  # Benchmarking

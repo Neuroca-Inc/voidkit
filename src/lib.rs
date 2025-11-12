@@ -18,6 +18,8 @@ pub mod fractional_calculus;
 pub mod dynamical_systems;
 pub mod soc_analysis;
 pub mod ot;
+pub mod fractal_analysis;
+pub mod stochastic;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -55,6 +57,12 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // Optimal transport
     m.add_function(wrap_pyfunction!(ot::wasserstein_distance::calculate_wasserstein_distance, m)?)?;
+    
+    // Fractal analysis
+    m.add_function(wrap_pyfunction!(fractal_analysis::calculate_fractal_dimension::calculate_fractal_dimension, m)?)?;
+    
+    // Stochastic simulation
+    m.add_function(wrap_pyfunction!(stochastic::gillespie_simulation::gillespie_simulation, m)?)?;
     
     Ok(())
 }

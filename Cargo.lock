@@ -904,6 +904,7 @@ dependencies = [
  "numpy",
  "peroxide",
  "pyo3",
+ "rand",
 ]
 
 [[package]]
