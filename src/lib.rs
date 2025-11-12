@@ -24,6 +24,7 @@ pub mod time_series;
 pub mod sde;
 pub mod evolutionary;
 pub mod spatial;
+pub mod neuro;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -64,6 +65,11 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_entropy, m)?)?;
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_mutual_information, m)?)?;
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_kl_divergence, m)?)?;
+    m.add_function(wrap_pyfunction!(info_theory::information_theory::information_bottleneck, m)?)?;
+    
+    // Neural plasticity
+    m.add_function(wrap_pyfunction!(neuro::advanced_sie::calculate_stabilized_reward, m)?)?;
+    m.add_function(wrap_pyfunction!(neuro::advanced_sie::apply_quadratic_stdp_modulation, m)?)?;
     
     // Thermodynamics
     m.add_function(wrap_pyfunction!(thermodynamics::free_energy::calculate_free_energy, m)?)?;
