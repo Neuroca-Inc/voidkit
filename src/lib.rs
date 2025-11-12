@@ -13,6 +13,10 @@ pub mod numerical;
 pub mod advanced_math;
 pub mod void_dynamics;
 pub mod info_theory;
+pub mod thermodynamics;
+pub mod fractional_calculus;
+pub mod dynamical_systems;
+pub mod soc_analysis;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -34,6 +38,19 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_entropy, m)?)?;
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_mutual_information, m)?)?;
     m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_kl_divergence, m)?)?;
+    
+    // Thermodynamics
+    m.add_function(wrap_pyfunction!(thermodynamics::free_energy::calculate_free_energy, m)?)?;
+    m.add_function(wrap_pyfunction!(thermodynamics::free_energy::minimize_free_energy_step, m)?)?;
+    
+    // Fractional calculus
+    m.add_function(wrap_pyfunction!(fractional_calculus::caputo_derivative::caputo_derivative, m)?)?;
+    
+    // Dynamical systems
+    m.add_function(wrap_pyfunction!(dynamical_systems::calculate_jacobian::calculate_jacobian, m)?)?;
+    
+    // SOC analysis
+    m.add_function(wrap_pyfunction!(soc_analysis::fit_power_law::fit_power_law, m)?)?;
     
     Ok(())
 }
