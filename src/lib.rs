@@ -14,11 +14,13 @@ pub mod dynamical_systems;
 pub mod evolutionary;
 pub mod fractal_analysis;
 pub mod fractional_calculus;
+pub mod iit;
 pub mod info_theory;
 pub mod neuro;
 pub mod numerical;
 pub mod ot;
 pub mod sde;
+pub mod semantic;
 pub mod soc_analysis;
 pub mod spatial;
 pub mod stochastic;
@@ -236,6 +238,18 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Spatial data structures
     m.add_class::<spatial::spatial_hash_grid::SpatialHashGrid>()?;
+
+    // Integrated Information Theory
+    m.add_function(wrap_pyfunction!(
+        iit::simplified_phi::calculate_simplified_phi_py,
+        m
+    )?)?;
+
+    // Semantic analysis
+    m.add_function(wrap_pyfunction!(
+        semantic::semantic_coverage::calculate_semantic_coverage_py,
+        m
+    )?)?;
 
     Ok(())
 }
