@@ -81,12 +81,10 @@ pub fn calculate_stabilized_reward(
 ) -> PyResult<f64> {
     // Calculate modulated weight for TD error based on external reward
     let w_r = w_r_base * (-lambda_reg * external_reward.abs()).exp();
-    
+
     // Calculate total reward combining all components
-    let reward = w_r * td_error 
-        + w_n * novelty * (1.0 - habituation.tanh())
-        + w_s * self_benefit;
-    
+    let reward = w_r * td_error + w_n * novelty * (1.0 - habituation.tanh()) + w_s * self_benefit;
+
     Ok(reward)
 }
 
@@ -141,10 +139,10 @@ pub fn apply_quadratic_stdp_modulation(
 ) -> PyResult<f64> {
     // Calculate reward-modulated learning rate
     let eta = eta_base * (1.0 + beta * total_reward.powi(2));
-    
+
     // Apply temporal decay based on spike timing
     let delta_w = eta * (-delta_t / tau).exp();
-    
+
     Ok(delta_w)
 }
 
@@ -165,9 +163,10 @@ mod tests {
             0.6,  // w_r_base
             0.3,  // w_n
             0.1,  // w_s
-            0.05  // lambda_reg
-        ).unwrap();
-        
+            0.05, // lambda_reg
+        )
+        .unwrap();
+
         // Expected: 0.6 * 1.0 + 0.3 * 0.5 * (1 - tanh(0)) + 0.1 * 0.2
         // = 0.6 + 0.15 + 0.02 = 0.77
         assert_relative_eq!(reward, 0.77, epsilon = 1e-10);
@@ -185,9 +184,10 @@ mod tests {
             0.6,  // w_r_base
             0.3,  // w_n
             0.1,  // w_s
-            0.05  // lambda_reg
-        ).unwrap();
-        
+            0.05, // lambda_reg
+        )
+        .unwrap();
+
         // Expected: 0.3 * 1.0 * (1 - tanh(2.0))
         let expected = 0.3 * (1.0 - 2.0_f64.tanh());
         assert_relative_eq!(reward, expected, epsilon = 1e-10);
@@ -196,14 +196,12 @@ mod tests {
     #[test]
     fn test_calculate_stabilized_reward_external_modulation() {
         // Test external reward modulation
-        let reward1 = calculate_stabilized_reward(
-            1.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.3, 0.1, 0.05
-        ).unwrap();
-        
-        let reward2 = calculate_stabilized_reward(
-            1.0, 0.0, 0.0, 0.0, 5.0, 0.6, 0.3, 0.1, 0.05
-        ).unwrap();
-        
+        let reward1 =
+            calculate_stabilized_reward(1.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.3, 0.1, 0.05).unwrap();
+
+        let reward2 =
+            calculate_stabilized_reward(1.0, 0.0, 0.0, 0.0, 5.0, 0.6, 0.3, 0.1, 0.05).unwrap();
+
         // With external reward, w_r should be reduced
         // reward2 should be less than reward1
         assert!(reward2 < reward1);
@@ -213,13 +211,14 @@ mod tests {
     fn test_apply_quadratic_stdp_modulation_zero_reward() {
         // Test with no reward modulation
         let delta_w = apply_quadratic_stdp_modulation(
-            0.1,   // eta_base
-            0.15,  // beta
-            10.0,  // tau
-            0.0,   // delta_t (simultaneous spikes)
-            0.0    // total_reward
-        ).unwrap();
-        
+            0.1,  // eta_base
+            0.15, // beta
+            10.0, // tau
+            0.0,  // delta_t (simultaneous spikes)
+            0.0,  // total_reward
+        )
+        .unwrap();
+
         // Expected: 0.1 * (1 + 0.15 * 0) * exp(0) = 0.1
         assert_relative_eq!(delta_w, 0.1, epsilon = 1e-10);
     }
@@ -228,13 +227,14 @@ mod tests {
     fn test_apply_quadratic_stdp_modulation_with_reward() {
         // Test with reward modulation
         let delta_w = apply_quadratic_stdp_modulation(
-            0.1,   // eta_base
-            0.2,   // beta
-            10.0,  // tau
-            0.0,   // delta_t
-            1.0    // total_reward
-        ).unwrap();
-        
+            0.1,  // eta_base
+            0.2,  // beta
+            10.0, // tau
+            0.0,  // delta_t
+            1.0,  // total_reward
+        )
+        .unwrap();
+
         // Expected: 0.1 * (1 + 0.2 * 1.0) * exp(0) = 0.12
         assert_relative_eq!(delta_w, 0.12, epsilon = 1e-10);
     }
@@ -242,38 +242,28 @@ mod tests {
     #[test]
     fn test_apply_quadratic_stdp_modulation_temporal_decay() {
         // Test temporal decay
-        let delta_w1 = apply_quadratic_stdp_modulation(
-            0.1, 0.0, 10.0, 0.0, 0.0
-        ).unwrap();
-        
-        let delta_w2 = apply_quadratic_stdp_modulation(
-            0.1, 0.0, 10.0, 10.0, 0.0
-        ).unwrap();
-        
-        let delta_w3 = apply_quadratic_stdp_modulation(
-            0.1, 0.0, 10.0, 20.0, 0.0
-        ).unwrap();
-        
+        let delta_w1 = apply_quadratic_stdp_modulation(0.1, 0.0, 10.0, 0.0, 0.0).unwrap();
+
+        let delta_w2 = apply_quadratic_stdp_modulation(0.1, 0.0, 10.0, 10.0, 0.0).unwrap();
+
+        let delta_w3 = apply_quadratic_stdp_modulation(0.1, 0.0, 10.0, 20.0, 0.0).unwrap();
+
         // Should decay exponentially with increasing delta_t
         assert!(delta_w1 > delta_w2);
         assert!(delta_w2 > delta_w3);
-        
+
         // Check specific decay value for delta_t = 10
-        let expected = 0.1 * (-1.0_f64).exp();  // exp(-10/10) = exp(-1)
+        let expected = 0.1 * (-1.0_f64).exp(); // exp(-10/10) = exp(-1)
         assert_relative_eq!(delta_w2, expected, epsilon = 1e-10);
     }
 
     #[test]
     fn test_apply_quadratic_stdp_modulation_quadratic_scaling() {
         // Test quadratic scaling of reward
-        let delta_w1 = apply_quadratic_stdp_modulation(
-            0.1, 0.2, 10.0, 0.0, 1.0
-        ).unwrap();
-        
-        let delta_w2 = apply_quadratic_stdp_modulation(
-            0.1, 0.2, 10.0, 0.0, 2.0
-        ).unwrap();
-        
+        let delta_w1 = apply_quadratic_stdp_modulation(0.1, 0.2, 10.0, 0.0, 1.0).unwrap();
+
+        let delta_w2 = apply_quadratic_stdp_modulation(0.1, 0.2, 10.0, 0.0, 2.0).unwrap();
+
         // Reward 2 should give 4x modulation compared to reward 1
         // eta1 = 0.1 * (1 + 0.2 * 1) = 0.12
         // eta2 = 0.1 * (1 + 0.2 * 4) = 0.18

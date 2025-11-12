@@ -14,4 +14,4 @@ See LICENSE file for full terms.
 
 pub mod advanced_sie;
 
-pub use advanced_sie::{calculate_stabilized_reward, apply_quadratic_stdp_modulation};
+pub use advanced_sie::{apply_quadratic_stdp_modulation, calculate_stabilized_reward};
