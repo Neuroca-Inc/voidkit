@@ -12,6 +12,7 @@ use pyo3::prelude::*;
 pub mod numerical;
 pub mod advanced_math;
 pub mod void_dynamics;
+pub mod info_theory;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -28,6 +29,11 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // Advanced math - statistics
     m.add_function(wrap_pyfunction!(advanced_math::descriptive_stats::descriptive_stats, m)?)?;
+    
+    // Information theory
+    m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_entropy, m)?)?;
+    m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_mutual_information, m)?)?;
+    m.add_function(wrap_pyfunction!(info_theory::information_theory::calculate_kl_divergence, m)?)?;
     
     Ok(())
 }
