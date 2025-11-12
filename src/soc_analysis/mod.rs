@@ -5,3 +5,4 @@ SOC (Self-Organized Criticality) analysis module.
 */
 
 pub mod fit_power_law;
+pub mod detect_neuronal_avalanches;

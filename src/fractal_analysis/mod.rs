@@ -5,3 +5,4 @@ Fractal analysis module.
 */
 
 pub mod calculate_fractal_dimension;
+pub mod fractal_spike_train;
