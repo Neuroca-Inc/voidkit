@@ -30,5 +30,11 @@ approx = "0.5"     # Floating point comparisons
 rand = "0.8"       # Random number generation
 rand_distr = "0.4" # Random distributions
 
+# Graph theory
+petgraph = "0.6"   # Graph data structures and algorithms
+
+# Statistics
+statrs = "0.17"    # Statistical distributions and functions
+
 [dev-dependencies]
 criterion = "0.5"  # Benchmarking

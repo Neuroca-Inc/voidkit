@@ -10,15 +10,20 @@ See LICENSE file for full terms.
 use pyo3::prelude::*;
 
 pub mod advanced_math;
+pub mod causal_inference;
+pub mod clustering;
 pub mod dynamical_systems;
 pub mod evolutionary;
 pub mod fractal_analysis;
 pub mod fractional_calculus;
+pub mod graph;
+pub mod iit;
 pub mod info_theory;
 pub mod neuro;
 pub mod numerical;
 pub mod ot;
 pub mod sde;
+pub mod semantic;
 pub mod soc_analysis;
 pub mod spatial;
 pub mod stochastic;
@@ -236,6 +241,44 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Spatial data structures
     m.add_class::<spatial::spatial_hash_grid::SpatialHashGrid>()?;
+
+    // Integrated Information Theory
+    m.add_function(wrap_pyfunction!(
+        iit::simplified_phi::calculate_simplified_phi_py,
+        m
+    )?)?;
+
+    // Semantic analysis
+    m.add_function(wrap_pyfunction!(
+        semantic::semantic_coverage::calculate_semantic_coverage_py,
+        m
+    )?)?;
+
+    // Clustering
+    m.add_function(wrap_pyfunction!(
+        clustering::adaptive_clustering::calculate_adaptive_clustering_interval_py,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        clustering::spectral_clustering::spectral_clustering_with_temporal_kernel_py,
+        m
+    )?)?;
+
+    // Graph theory
+    m.add_function(wrap_pyfunction!(
+        graph::graph_metrics::calculate_graph_metrics_py,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        graph::pagerank::calculate_pagerank_py,
+        m
+    )?)?;
+
+    // Causal inference
+    m.add_function(wrap_pyfunction!(
+        causal_inference::transfer_entropy::calculate_transfer_entropy_py,
+        m
+    )?)?;
 
     Ok(())
 }
