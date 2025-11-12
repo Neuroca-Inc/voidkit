@@ -905,6 +905,7 @@ dependencies = [
  "peroxide",
  "pyo3",
  "rand",
+ "rand_distr",
 ]
 
 [[package]]

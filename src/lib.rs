@@ -21,6 +21,7 @@ pub mod ot;
 pub mod fractal_analysis;
 pub mod stochastic;
 pub mod time_series;
+pub mod sde;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -76,12 +77,14 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // SOC analysis
     m.add_function(wrap_pyfunction!(soc_analysis::fit_power_law::fit_power_law, m)?)?;
+    m.add_function(wrap_pyfunction!(soc_analysis::detect_neuronal_avalanches::detect_neuronal_avalanches, m)?)?;
     
     // Optimal transport
     m.add_function(wrap_pyfunction!(ot::wasserstein_distance::calculate_wasserstein_distance, m)?)?;
     
     // Fractal analysis
     m.add_function(wrap_pyfunction!(fractal_analysis::calculate_fractal_dimension::calculate_fractal_dimension, m)?)?;
+    m.add_function(wrap_pyfunction!(fractal_analysis::fractal_spike_train::generate_fractal_spike_train, m)?)?;
     
     // Stochastic simulation
     m.add_function(wrap_pyfunction!(stochastic::gillespie_simulation::gillespie_simulation, m)?)?;
@@ -89,6 +92,9 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Time series
     m.add_function(wrap_pyfunction!(time_series::time_series_analysis::calculate_autocorrelation, m)?)?;
     m.add_function(wrap_pyfunction!(time_series::time_series_analysis::calculate_cross_correlation, m)?)?;
+    
+    // SDE solver
+    m.add_function(wrap_pyfunction!(sde::sde_solver::sde_solver, m)?)?;
     
     Ok(())
 }
