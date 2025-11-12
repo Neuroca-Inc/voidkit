@@ -21,12 +21,16 @@ pub mod iit;
 pub mod info_theory;
 pub mod neuro;
 pub mod numerical;
+pub mod optimization;
 pub mod ot;
+pub mod pathway_analysis;
 pub mod sde;
 pub mod semantic;
 pub mod soc_analysis;
 pub mod spatial;
 pub mod stochastic;
+pub mod structural_plasticity;
+pub mod tda;
 pub mod thermodynamics;
 pub mod time_series;
 pub mod void_dynamics;
@@ -277,6 +281,46 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Causal inference
     m.add_function(wrap_pyfunction!(
         causal_inference::transfer_entropy::calculate_transfer_entropy_py,
+        m
+    )?)?;
+
+    // Pathway analysis
+    m.add_function(wrap_pyfunction!(
+        pathway_analysis::dynamic_persistence::calculate_dynamic_persistence_threshold,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        pathway_analysis::dynamic_persistence::calculate_interference_score,
+        m
+    )?)?;
+
+    // Structural plasticity
+    m.add_function(wrap_pyfunction!(
+        structural_plasticity::bdnf_proxy::calculate_bdnf_proxy,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        structural_plasticity::detect_bursts::detect_bursts,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        structural_plasticity::advanced_triggers::calculate_advanced_growth_trigger,
+        m
+    )?)?;
+
+    // Topological Data Analysis
+    m.add_function(wrap_pyfunction!(
+        tda::vietoris_rips::construct_vietoris_rips,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        tda::tda_metrics::calculate_tda_metrics,
+        m
+    )?)?;
+
+    // Optimization
+    m.add_function(wrap_pyfunction!(
+        optimization::grid_search::random_search_optimization,
         m
     )?)?;
 
