@@ -140,10 +140,10 @@ mod tests {
     
     #[test]
     fn test_free_energy_calculation() {
-        let spike_rates = vec![0.5, 0.6, 0.4];
-        let target_rate = 0.5;
-        let weights = vec![vec![0.1, 0.2], vec![0.3, 0.4], vec![0.5, 0.6]];
-        let lambda_reg = 0.01;
+        let spike_rates: Vec<f64> = vec![0.5, 0.6, 0.4];
+        let target_rate: f64 = 0.5;
+        let weights: Vec<Vec<f64>> = vec![vec![0.1, 0.2], vec![0.3, 0.4], vec![0.5, 0.6]];
+        let lambda_reg: f64 = 0.01;
         
         // Calculate rate error
         let rate_error: f64 = spike_rates.iter()
@@ -160,6 +160,7 @@ mod tests {
         
         // Basic sanity check
         assert!(expected >= 0.0);
-        assert_relative_eq!(rate_error, 0.01, epsilon = 1e-10);
+        // rate_error = (0.5-0.5)^2 + (0.6-0.5)^2 + (0.4-0.5)^2 = 0 + 0.01 + 0.01 = 0.02
+        assert_relative_eq!(rate_error, 0.02, epsilon = 1e-6);
     }
 }

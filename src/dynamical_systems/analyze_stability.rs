@@ -12,7 +12,7 @@ See LICENSE file for full terms.
 //! Analyzes the stability of fixed points by examining eigenvalues of the Jacobian.
 
 use pyo3::prelude::*;
-use numpy::{PyReadonlyArray2, PyArray1};
+use numpy::{PyReadonlyArray2, PyArray1, PyArrayMethods};
 use nalgebra::{DMatrix, Complex};
 use std::collections::HashMap;
 

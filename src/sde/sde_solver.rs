@@ -12,7 +12,7 @@ See LICENSE file for full terms.
 //! Solves systems of SDEs using the Euler-Maruyama method.
 
 use pyo3::prelude::*;
-use numpy::{PyArray1, PyArray2, PyReadonlyArray1};
+use numpy::{PyArray1, PyArray2, PyReadonlyArray1, PyArrayMethods};
 use rand::thread_rng;
 use rand_distr::{Distribution, Normal};
 
@@ -148,7 +148,8 @@ def diffusion(x):
             let drift: PyObject = locals.get_item("drift").unwrap().unwrap().into();
             let diffusion: PyObject = locals.get_item("diffusion").unwrap().unwrap().into();
             
-            let initial = numpy::PyArray1::from_vec_bound(py, vec![1.0]);
+            let initial: Vec<f64> = vec![1.0];
+            let initial_py = numpy::PyArray1::from_vec_bound(py, initial);
             let t_span = (0.0, 1.0);
             let dt = 0.1;
             
@@ -156,24 +157,26 @@ def diffusion(x):
                 py,
                 drift,
                 diffusion,
-                initial.readonly(),
+                initial_py.readonly(),
                 t_span,
                 dt
             ).unwrap();
             
-            let times_arr = times.readonly();
-            let states_arr = states.readonly();
+            let times_ro = times.readonly();
+            let times_arr = times_ro.as_array();
+            let states_ro = states.readonly();
+            let states_view = states_ro.as_array();
             
             // Check dimensions
             assert_eq!(times_arr.len(), 11); // 0.0, 0.1, ..., 1.0
-            assert_eq!(states_arr.shape(), [11, 1]);
+            assert_eq!(states_view.shape(), &[11, 1]);
             
             // Check initial state
-            assert!((states_arr[[0, 0]] - 1.0).abs() < 1e-10);
+            assert!((states_view[[0, 0]] - 1.0).abs() < 1e-10);
             
             // Final state should be approximately exp(-1) ≈ 0.368
             // (with some numerical error from Euler method)
-            let final_val = states_arr[[10, 0]];
+            let final_val = states_view[[10, 0]];
             assert!(final_val < 0.5 && final_val > 0.2);
         });
     }

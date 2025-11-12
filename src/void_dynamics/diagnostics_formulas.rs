@@ -13,7 +13,7 @@ See LICENSE file for full terms.
 //! for the Introspection Probe's pathology detection and the ADC's adaptive scheduling.
 
 use pyo3::prelude::*;
-use numpy::PyReadonlyArray1;
+use numpy::{PyReadonlyArray1, PyArrayMethods};
 
 /// Calculates the pathology score for a locus (subgraph) to identify
 /// inefficient, high-activity, low-output regions.
@@ -130,8 +130,8 @@ mod tests {
         pyo3::prepare_freethreaded_python();
         
         Python::with_gil(|py| {
-            let rates = vec![1.0, 2.0, 3.0];
-            let diversity = vec![0.5, 0.5, 0.5];
+            let rates: Vec<f64> = vec![1.0, 2.0, 3.0];
+            let diversity: Vec<f64> = vec![0.5, 0.5, 0.5];
             
             let rates_py = numpy::PyArray1::from_vec_bound(py, rates);
             let diversity_py = numpy::PyArray1::from_vec_bound(py, diversity);
@@ -152,7 +152,7 @@ mod tests {
         
         Python::with_gil(|py| {
             // Uniform distribution should have maximum entropy
-            let uniform = vec![1.0, 1.0, 1.0, 1.0];
+            let uniform: Vec<f64> = vec![1.0, 1.0, 1.0, 1.0];
             let uniform_py = numpy::PyArray1::from_vec_bound(py, uniform);
             
             let entropy = calculate_graph_entropy(uniform_py.readonly()).unwrap();
