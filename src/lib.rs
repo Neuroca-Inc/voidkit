@@ -17,6 +17,7 @@ pub mod thermodynamics;
 pub mod fractional_calculus;
 pub mod dynamical_systems;
 pub mod soc_analysis;
+pub mod ot;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -51,6 +52,9 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     
     // SOC analysis
     m.add_function(wrap_pyfunction!(soc_analysis::fit_power_law::fit_power_law, m)?)?;
+    
+    // Optimal transport
+    m.add_function(wrap_pyfunction!(ot::wasserstein_distance::calculate_wasserstein_distance, m)?)?;
     
     Ok(())
 }
