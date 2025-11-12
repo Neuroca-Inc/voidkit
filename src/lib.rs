@@ -23,6 +23,7 @@ pub mod stochastic;
 pub mod time_series;
 pub mod sde;
 pub mod evolutionary;
+pub mod spatial;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -100,6 +101,9 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Evolutionary algorithms
     m.add_function(wrap_pyfunction!(evolutionary::apply_mutation::apply_mutation, m)?)?;
     m.add_function(wrap_pyfunction!(evolutionary::apply_recombination::apply_recombination, m)?)?;
+    
+    // Spatial data structures
+    m.add_class::<spatial::spatial_hash_grid::SpatialHashGrid>()?;
     
     Ok(())
 }
