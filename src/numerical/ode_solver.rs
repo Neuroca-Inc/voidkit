@@ -5,7 +5,7 @@ Numerically solve an ordinary differential equation (ODE) initial value problem.
 */
 
 use pyo3::prelude::*;
-use pyo3::exceptions::{PyTypeError, PyValueError, PyRuntimeError};
+use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::types::PyTuple;
 use numpy::{PyArray1, PyArray2, PyReadonlyArray1};
 

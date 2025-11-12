@@ -6,7 +6,7 @@ linear algebra routines.
 */
 
 use pyo3::prelude::*;
-use pyo3::exceptions::{PyTypeError, PyValueError};
+use pyo3::exceptions::PyValueError;
 use numpy::{PyArray1, PyReadonlyArray1, PyReadonlyArray2};
 use nalgebra::{DMatrix, DVector};
 
