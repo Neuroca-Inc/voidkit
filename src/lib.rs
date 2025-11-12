@@ -10,6 +10,7 @@ See LICENSE file for full terms.
 use pyo3::prelude::*;
 
 pub mod advanced_math;
+pub mod clustering;
 pub mod dynamical_systems;
 pub mod evolutionary;
 pub mod fractal_analysis;
@@ -248,6 +249,16 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // Semantic analysis
     m.add_function(wrap_pyfunction!(
         semantic::semantic_coverage::calculate_semantic_coverage_py,
+        m
+    )?)?;
+
+    // Clustering
+    m.add_function(wrap_pyfunction!(
+        clustering::adaptive_clustering::calculate_adaptive_clustering_interval_py,
+        m
+    )?)?;
+    m.add_function(wrap_pyfunction!(
+        clustering::spectral_clustering::spectral_clustering_with_temporal_kernel_py,
         m
     )?)?;
 
