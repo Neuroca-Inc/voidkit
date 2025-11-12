@@ -4,9 +4,9 @@ Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
 Optimal Transport module - Wasserstein distance calculation.
 */
 
-use pyo3::prelude::*;
-use pyo3::exceptions::PyValueError;
 use numpy::PyReadonlyArray1;
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
 
 /// Calculates the 1-D Wasserstein distance between two distributions.
 ///
@@ -47,59 +47,61 @@ pub fn calculate_wasserstein_distance(
 ) -> PyResult<f64> {
     let u = u_values.as_array();
     let v = v_values.as_array();
-    
+
     if u.len() == 0 || v.len() == 0 {
         return Err(PyValueError::new_err("Input arrays must not be empty"));
     }
-    
+
     // Get or create uniform weights
     let u_w: Vec<f64> = if let Some(weights) = u_weights {
         let w = weights.as_array();
         if w.len() != u.len() {
             return Err(PyValueError::new_err(
-                "u_weights must have the same length as u_values"
+                "u_weights must have the same length as u_values",
             ));
         }
         w.to_vec()
     } else {
         vec![1.0 / u.len() as f64; u.len()]
     };
-    
+
     let v_w: Vec<f64> = if let Some(weights) = v_weights {
         let w = weights.as_array();
         if w.len() != v.len() {
             return Err(PyValueError::new_err(
-                "v_weights must have the same length as v_values"
+                "v_weights must have the same length as v_values",
             ));
         }
         w.to_vec()
     } else {
         vec![1.0 / v.len() as f64; v.len()]
     };
-    
+
     // Validate weights sum to 1 (approximately)
     let u_sum: f64 = u_w.iter().sum();
     let v_sum: f64 = v_w.iter().sum();
-    
+
     if (u_sum - 1.0).abs() > 1e-6 {
         return Err(PyValueError::new_err(format!(
-            "u_weights must sum to 1, got {}", u_sum
+            "u_weights must sum to 1, got {}",
+            u_sum
         )));
     }
-    
+
     if (v_sum - 1.0).abs() > 1e-6 {
         return Err(PyValueError::new_err(format!(
-            "v_weights must sum to 1, got {}", v_sum
+            "v_weights must sum to 1, got {}",
+            v_sum
         )));
     }
-    
+
     // Sort values with their weights
     let mut u_sorted: Vec<(f64, f64)> = u.iter().zip(&u_w).map(|(&val, &w)| (val, w)).collect();
     let mut v_sorted: Vec<(f64, f64)> = v.iter().zip(&v_w).map(|(&val, &w)| (val, w)).collect();
-    
+
     u_sorted.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
     v_sorted.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
-    
+
     // Compute Wasserstein distance using cumulative distributions
     let mut distance: f64 = 0.0;
     let mut u_idx = 0;
@@ -107,28 +109,28 @@ pub fn calculate_wasserstein_distance(
     let mut u_cum: f64 = 0.0;
     let mut v_cum: f64 = 0.0;
     let mut prev_val: f64 = u_sorted[0].0.min(v_sorted[0].0);
-    
+
     while u_idx < u_sorted.len() || v_idx < v_sorted.len() {
         let (u_val, u_w_val) = if u_idx < u_sorted.len() {
             u_sorted[u_idx]
         } else {
             (f64::INFINITY, 0.0)
         };
-        
+
         let (v_val, v_w_val) = if v_idx < v_sorted.len() {
             v_sorted[v_idx]
         } else {
             (f64::INFINITY, 0.0)
         };
-        
+
         let curr_val = u_val.min(v_val);
-        
+
         if curr_val < f64::INFINITY {
             // Add contribution from previous segment
             distance += (u_cum - v_cum).abs() * (curr_val - prev_val);
             prev_val = curr_val;
         }
-        
+
         // Update cumulative sums
         if u_val <= v_val && u_idx < u_sorted.len() {
             u_cum += u_w_val;
@@ -139,7 +141,7 @@ pub fn calculate_wasserstein_distance(
             v_idx += 1;
         }
     }
-    
+
     Ok(distance)
 }
 
@@ -147,33 +149,33 @@ pub fn calculate_wasserstein_distance(
 mod tests {
     use super::*;
     use approx::assert_relative_eq;
-    
+
     #[test]
     fn test_identical_distributions() {
         // Wasserstein distance between identical distributions should be 0
         let u = vec![1.0, 2.0, 3.0];
         let u_w = vec![1.0 / 3.0; 3];
-        
+
         let mut u_sorted: Vec<(f64, f64)> = u.iter().zip(&u_w).map(|(&val, &w)| (val, w)).collect();
         u_sorted.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
-        
+
         // For identical distributions, cumulative sums should match at each step
         assert_eq!(u_sorted.len(), 3);
     }
-    
+
     #[test]
     fn test_shifted_distribution() {
         // Distance between distributions shifted by 1 should be 1
         let u = vec![0.0, 1.0, 2.0];
         let v = vec![1.0, 2.0, 3.0];
-        
+
         // Both uniform
         let weight = 1.0 / 3.0;
-        
+
         // Expected: each point moves distance 1, weighted by 1/3
         // Total = 3 * (1/3) * 1 = 1
         let expected = 1.0;
-        
+
         // Simplified check
         assert_relative_eq!(expected, 1.0, epsilon = 1e-10);
     }

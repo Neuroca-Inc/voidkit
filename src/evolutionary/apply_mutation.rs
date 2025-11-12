@@ -8,23 +8,23 @@ See LICENSE file for full terms.
 */
 
 //! Mutation Operator for Evolutionary Algorithms
-//! 
+//!
 //! Applies random mutations to weights/parameters.
 
-use pyo3::prelude::*;
-use numpy::{PyArray, PyReadonlyArray, IntoPyArray};
 use ndarray::ArrayD;
+use numpy::{IntoPyArray, PyArray, PyReadonlyArray};
+use pyo3::prelude::*;
 use rand::thread_rng;
 use rand::Rng;
 use rand_distr::{Distribution, Normal};
 
 /// Applies random mutations to a set of weights.
-/// 
+///
 /// # Arguments
 /// * `weights` - The weights to mutate (any dimensional array)
 /// * `mutation_rate` - Probability of each weight being mutated (default: 0.01)
 /// * `mutation_scale` - Standard deviation of Gaussian noise (default: 0.1)
-/// 
+///
 /// # Returns
 /// Mutated weights array
 #[pyfunction]
@@ -37,24 +37,24 @@ pub fn apply_mutation<'py>(
 ) -> PyResult<Bound<'py, PyArray<f64, ndarray::IxDyn>>> {
     if mutation_rate < 0.0 || mutation_rate > 1.0 {
         return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            "mutation_rate must be between 0 and 1"
+            "mutation_rate must be between 0 and 1",
         ));
     }
-    
+
     if mutation_scale < 0.0 {
         return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            "mutation_scale must be non-negative"
+            "mutation_scale must be non-negative",
         ));
     }
-    
+
     let weights_arr = weights.as_array();
     let mut mutated = weights_arr.to_owned();
-    
+
     let mut rng = thread_rng();
     let normal = Normal::new(0.0, mutation_scale).map_err(|e| {
         PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Invalid mutation_scale: {}", e))
     })?;
-    
+
     // Apply mutations
     for elem in mutated.iter_mut() {
         if rng.gen::<f64>() < mutation_rate {
@@ -62,6 +62,6 @@ pub fn apply_mutation<'py>(
             *elem += mutation;
         }
     }
-    
+
     Ok(mutated.into_pyarray_bound(py))
 }

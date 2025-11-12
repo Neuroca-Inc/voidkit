@@ -4,9 +4,9 @@ Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
 Thermodynamics module - free energy calculations.
 */
 
-use pyo3::prelude::*;
+use numpy::{PyArray1, PyReadonlyArray1, PyReadonlyArray2};
 use pyo3::exceptions::PyValueError;
-use numpy::{PyReadonlyArray1, PyReadonlyArray2, PyArray1};
+use pyo3::prelude::*;
 
 /// Calculates the free energy of the system.
 ///
@@ -45,17 +45,13 @@ pub fn calculate_free_energy(
 ) -> PyResult<f64> {
     let rates = spike_rates.as_array();
     let w = weights.as_array();
-    
+
     // Calculate rate error: Σ_i (spike_rate_i - target_rate)^2
-    let rate_error: f64 = rates.iter()
-        .map(|&r| (r - target_rate).powi(2))
-        .sum();
-    
+    let rate_error: f64 = rates.iter().map(|&r| (r - target_rate).powi(2)).sum();
+
     // Calculate weight regularization: λ * Σ w_ij^2
-    let weight_regularization: f64 = lambda_reg * w.iter()
-        .map(|&w_val| w_val.powi(2))
-        .sum::<f64>();
-    
+    let weight_regularization: f64 = lambda_reg * w.iter().map(|&w_val| w_val.powi(2)).sum::<f64>();
+
     Ok(rate_error + weight_regularization)
 }
 
@@ -108,27 +104,27 @@ pub fn minimize_free_energy_step<'py>(
 ) -> PyResult<Bound<'py, PyArray1<f64>>> {
     let w = weights.as_array();
     let _rates = spike_rates.as_array();
-    
+
     let shape = w.shape();
     let (n_rows, n_cols) = (shape[0], shape[1]);
-    
+
     // Calculate gradient: ∂F/∂w_ij = 2 * lambda * w_ij
     let mut new_weights = Vec::with_capacity(n_rows * n_cols);
-    
+
     // STDP-like time modulation
     let time_modulation = (-delta_t / tau).exp();
-    
+
     for i in 0..n_rows {
         for j in 0..n_cols {
             let w_ij = w[[i, j]];
             let grad_f = 2.0 * lambda_reg * w_ij;
-            
+
             // Update: w_ij = w_ij - η * grad_F * exp(-Δt/τ)
             let delta_w = -eta * grad_f * time_modulation;
             new_weights.push(w_ij + delta_w);
         }
     }
-    
+
     // Convert back to 2D array representation (flattened)
     Ok(PyArray1::from_vec_bound(py, new_weights))
 }
@@ -137,27 +133,27 @@ pub fn minimize_free_energy_step<'py>(
 mod tests {
     use super::*;
     use approx::assert_relative_eq;
-    
+
     #[test]
     fn test_free_energy_calculation() {
         let spike_rates: Vec<f64> = vec![0.5, 0.6, 0.4];
         let target_rate: f64 = 0.5;
         let weights: Vec<Vec<f64>> = vec![vec![0.1, 0.2], vec![0.3, 0.4], vec![0.5, 0.6]];
         let lambda_reg: f64 = 0.01;
-        
+
         // Calculate rate error
-        let rate_error: f64 = spike_rates.iter()
-            .map(|&r| (r - target_rate).powi(2))
-            .sum();
-        
+        let rate_error: f64 = spike_rates.iter().map(|&r| (r - target_rate).powi(2)).sum();
+
         // Calculate weight regularization
-        let weight_reg: f64 = lambda_reg * weights.iter()
-            .flat_map(|row| row.iter())
-            .map(|&w| w.powi(2))
-            .sum::<f64>();
-        
+        let weight_reg: f64 = lambda_reg
+            * weights
+                .iter()
+                .flat_map(|row| row.iter())
+                .map(|&w| w.powi(2))
+                .sum::<f64>();
+
         let expected = rate_error + weight_reg;
-        
+
         // Basic sanity check
         assert!(expected >= 0.0);
         // rate_error = (0.5-0.5)^2 + (0.6-0.5)^2 + (0.4-0.5)^2 = 0 + 0.01 + 0.01 = 0.02
