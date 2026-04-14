@@ -27,7 +27,7 @@ num-traits = "0.2"
 # Numerical methods
 peroxide = "0.37"  # ODE solvers, integration
 approx = "0.5"     # Floating point comparisons
-rand = "0.8"       # Random number generation
+rand = "0.9"       # Random number generation
 rand_distr = "0.4" # Random distributions
 
 # Graph theory
