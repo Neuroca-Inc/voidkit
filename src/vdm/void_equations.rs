@@ -34,13 +34,12 @@ const PHASE_SENS: f64 = 0.5; // Universal phase sensitivity for time modulation
 /// * `f_ref` - Reference frequency (defaults to universal constant)
 /// * `phase_sens` - Phase sensitivity (defaults to universal constant)
 /// * `use_time_dynamics` - Enable time modulation
-/// * `domain_modulation` - Domain-specific scaling factor
 ///
 /// # Returns
 ///
 /// The change in void state (delta)
 #[pyfunction]
-#[pyo3(signature = (w, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynamics=true, domain_modulation=1.0))]
+#[pyo3(signature = (w, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynamics=true))]
 pub fn delta_re_vgsp(
     w: f64,
     t: f64,
@@ -48,7 +47,6 @@ pub fn delta_re_vgsp(
     f_ref: Option<f64>,
     phase_sens: Option<f64>,
     use_time_dynamics: bool,
-    domain_modulation: f64,
 ) -> f64 {
     // Use universal constants as defaults
     let alpha_val = alpha.unwrap_or(ALPHA);
@@ -66,9 +64,6 @@ pub fn delta_re_vgsp(
         delta *= time_mod;
     }
 
-    // Apply domain-specific modulation
-    delta *= domain_modulation;
-
     delta
 }
 
@@ -84,13 +79,12 @@ pub fn delta_re_vgsp(
 /// * `f_ref` - Reference frequency (defaults to universal constant)
 /// * `phase_sens` - Phase sensitivity (defaults to universal constant)
 /// * `use_time_dynamics` - Enable time modulation
-/// * `domain_modulation` - Domain-specific scaling factor
 ///
 /// # Returns
 ///
 /// The change in structural plasticity (delta)
 #[pyfunction]
-#[pyo3(signature = (w, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=true, domain_modulation=1.0))]
+#[pyo3(signature = (w, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=true))]
 pub fn delta_gdsp(
     w: f64,
     t: f64,
@@ -98,7 +92,6 @@ pub fn delta_gdsp(
     f_ref: Option<f64>,
     phase_sens: Option<f64>,
     use_time_dynamics: bool,
-    domain_modulation: f64,
 ) -> f64 {
     // Use universal constants as defaults
     let beta_val = beta.unwrap_or(BETA);
@@ -116,9 +109,6 @@ pub fn delta_gdsp(
         let time_mod = 1.0 + phase_sens_val * phase.cos();
         delta *= time_mod;
     }
-
-    // Apply domain-specific modulation
-    delta *= domain_modulation;
 
     delta
 }
@@ -138,8 +128,8 @@ pub fn delta_gdsp(
 #[pyfunction]
 #[pyo3(signature = (w, t, dt=0.01))]
 pub fn vdm_step(w: f64, t: f64, dt: f64) -> f64 {
-    let alpha_delta = delta_re_vgsp(w, t, None, None, None, true, 1.0);
-    let omega_delta = delta_gdsp(w, t, None, None, None, true, 1.0);
+    let alpha_delta = delta_re_vgsp(w, t, None, None, None, true);
+    let omega_delta = delta_gdsp(w, t, None, None, None, true);
 
     // Combine both forces
     let total_delta = alpha_delta - omega_delta;
@@ -160,7 +150,7 @@ mod tests {
     fn test_delta_re_vgsp_basic() {
         let w = 0.5;
         let t = 1.0;
-        let delta = delta_re_vgsp(w, t, None, None, None, false, 1.0);
+        let delta = delta_re_vgsp(w, t, None, None, None, false);
 
         // With time dynamics off, should be simply alpha * w
         assert_relative_eq!(delta, ALPHA * w, epsilon = 1e-10);
@@ -170,7 +160,7 @@ mod tests {
     fn test_delta_gdsp_basic() {
         let w = 0.5;
         let t = 1.0;
-        let delta = delta_gdsp(w, t, None, None, None, false, 1.0);
+        let delta = delta_gdsp(w, t, None, None, None, false);
 
         // With time dynamics off, should be simply beta * (1 - w)
         assert_relative_eq!(delta, BETA * (1.0 - w), epsilon = 1e-10);
@@ -189,15 +179,4 @@ mod tests {
         );
     }
 
-    #[test]
-    fn test_domain_modulation() {
-        let w = 0.5;
-        let t = 1.0;
-        let mod_factor = 2.0;
-
-        let delta_normal = delta_re_vgsp(w, t, None, None, None, false, 1.0);
-        let delta_modulated = delta_re_vgsp(w, t, None, None, None, false, mod_factor);
-
-        assert_relative_eq!(delta_modulated, delta_normal * mod_factor, epsilon = 1e-10);
-    }
 }

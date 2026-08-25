@@ -87,8 +87,8 @@ if ($initialScanFiles) {
 
 # Suggested renames (display only)
 Write-Host "`nSuggested renames if present:" -ForegroundColor Cyan
-if (Test-Path "voidkit\void_dynamics\FUM_Void_Equations.py") {
-    Write-Host " - voidkit\void_dynamics\FUM_Void_Equations.py -> voidkit\void_dynamics\VDM_Void_Equations.py"
+if (Test-Path "voidkit\vdm\FUM_Void_Equations.py") {
+    Write-Host " - voidkit\vdm\FUM_Void_Equations.py -> voidkit\vdm\VDM_Void_Equations.py"
 }
 if (Test-Path "fum_advanced_math") {
     Write-Host " - Move fum_advanced_math -> voidkit\advanced_math (then update imports)"
@@ -103,10 +103,10 @@ if (-not $Apply) {
 Write-Host "`nApplying changes..." -ForegroundColor Yellow
 
 # 3) Targeted renames
-if (Test-Path "voidkit\void_dynamics\FUM_Void_Equations.py") {
+if (Test-Path "voidkit\vdm\FUM_Void_Equations.py") {
     Write-Host "Renaming FUM_Void_Equations.py -> VDM_Void_Equations.py"
-    if (-not (Test-Path "voidkit\void_dynamics\VDM_Void_Equations.py")) {
-        Rename-Item -Path "voidkit\void_dynamics\FUM_Void_Equations.py" -NewName "VDM_Void_Equations.py" -Force
+    if (-not (Test-Path "voidkit\vdm\VDM_Void_Equations.py")) {
+        Rename-Item -Path "voidkit\vdm\FUM_Void_Equations.py" -NewName "VDM_Void_Equations.py" -Force
     } else {
         Write-Host "Target already exists: VDM_Void_Equations.py (skipping rename)" -ForegroundColor DarkYellow
     }

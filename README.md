@@ -48,7 +48,7 @@ print(result)  # 2*x + 3
 ### Void Dynamics
 
 ```python
-from voidkit.void_dynamics.void_equations import delta_re_vgsp, delta_gdsp
+from voidkit.vdm.void_equations import delta_re_vgsp, delta_gdsp
 
 # VDM core functions
 W = 0.5  # void state
@@ -78,7 +78,8 @@ voidkit-diff "sin(x)**2 + x**3" --var x --order 1
 ## Package Structure
 
 - `voidkit.advanced_math` - Mathematical utilities and statistics
-- `voidkit.void_dynamics` - Core VDM functions and equations  
+- `voidkit.vdm` - Core VDM functions and equations  
+- `voidkit.phase_calculus` - Phase Calculus namespace (implementations added under separate derivational custody)  
 - `voidkit.graph` - Graph theory and network analysis
 - `voidkit.time_series` - Time series analysis tools
 - `voidkit.numerical` - Numerical methods and solvers

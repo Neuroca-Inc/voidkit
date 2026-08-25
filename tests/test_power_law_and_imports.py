@@ -25,8 +25,24 @@ def test_graph_namespace_imports_when_networkx_is_installed():
     assert hasattr(module, "calculate_pagerank")
 
 
-def test_void_debt_module_uses_package_relative_equations_import():
-    module = importlib.import_module("voidkit.void_dynamics.void_debt_modulation")
-    constants = module.VoidDebtModulation().constants
-    assert constants["ALPHA"] == pytest.approx(0.25)
-    assert constants["BETA"] == pytest.approx(0.1)
+def test_void_debt_modulation_module_is_removed():
+    with pytest.raises(ModuleNotFoundError):
+        importlib.import_module("voidkit.vdm.void_debt_modulation")
+
+
+def test_void_equations_have_no_domain_modulation_parameter():
+    import inspect
+
+    equations = importlib.import_module("voidkit.vdm.void_equations")
+    for name in ("delta_re_vgsp", "delta_gdsp", "universal_void_dynamics"):
+        assert "domain_modulation" not in inspect.signature(getattr(equations, name)).parameters
+
+
+def test_old_void_dynamics_namespace_is_removed():
+    with pytest.raises(ModuleNotFoundError):
+        importlib.import_module("voidkit.void_dynamics")
+
+
+def test_phase_calculus_namespace_imports():
+    module = importlib.import_module("voidkit.phase_calculus")
+    assert module.__name__ == "voidkit.phase_calculus"

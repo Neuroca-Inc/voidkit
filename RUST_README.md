@@ -18,8 +18,10 @@ src/
 │   └── ode_solver.rs         # ODE solvers (RK45, RK4, Euler)
 ├── advanced_math/            # Advanced mathematics
 │   └── descriptive_stats.rs # Statistical functions
-├── void_dynamics/            # Void Dynamics Model (VDM)
+├── vdm/            # Void Dynamics Model (VDM)
 │   └── void_equations.rs    # Core VDM equations
+├── phase_calculus/          # Phase Calculus namespace
+│   └── mod.rs               # Namespace scaffold
 ├── info_theory/              # Information theory
 │   └── information_theory.rs # Entropy, MI, KL divergence
 └── lib.rs                    # Main module entry point
@@ -32,7 +34,7 @@ src/
 - **`numerical_integrate(f, a, b, args)`** - Adaptive Simpson's rule integration
 - **`numerical_ode_solver(f, t_span, y0, ...)`** - Solve ODE systems with multiple methods
 
-### Void Dynamics (`void_dynamics`)
+### Void Dynamics (`vdm`)
 - **`delta_re_vgsp(w, t, ...)`** - Resonance-Enhanced VGSP dynamics
 - **`delta_gdsp(w, t, ...)`** - Goal-Directed Structural Plasticity
 - **`vdm_step(w, t, dt)`** - Combined VDM evolution step

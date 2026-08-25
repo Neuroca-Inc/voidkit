@@ -24,6 +24,7 @@ pub mod numerical;
 pub mod optimization;
 pub mod ot;
 pub mod pathway_analysis;
+pub mod phase_calculus;
 pub mod sde;
 pub mod semantic;
 pub mod soc_analysis;
@@ -33,7 +34,7 @@ pub mod structural_plasticity;
 pub mod tda;
 pub mod thermodynamics;
 pub mod time_series;
-pub mod void_dynamics;
+pub mod vdm;
 
 /// VoidKit Rust - High-performance math/physics library
 #[pymodule]
@@ -54,73 +55,73 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Void dynamics equations
     m.add_function(wrap_pyfunction!(
-        void_dynamics::void_equations::delta_re_vgsp,
+        vdm::void_equations::delta_re_vgsp,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::void_equations::delta_gdsp,
+        vdm::void_equations::delta_gdsp,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::void_equations::vdm_step,
+        vdm::void_equations::vdm_step,
         m
     )?)?;
 
     // SIE formulas
     m.add_function(wrap_pyfunction!(
-        void_dynamics::sie_formulas::calculate_td_error,
+        vdm::sie_formulas::calculate_td_error,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::sie_formulas::calculate_novelty_score,
+        vdm::sie_formulas::calculate_novelty_score,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::sie_formulas::calculate_habituation_score,
+        vdm::sie_formulas::calculate_habituation_score,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::sie_formulas::calculate_hsi,
+        vdm::sie_formulas::calculate_hsi,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::sie_formulas::calculate_total_reward,
+        vdm::sie_formulas::calculate_total_reward,
         m
     )?)?;
 
     // RE-VGSP formulas
     m.add_function(wrap_pyfunction!(
-        void_dynamics::revgsp_formulas::calculate_modulated_learning_rate,
+        vdm::revgsp_formulas::calculate_modulated_learning_rate,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::revgsp_formulas::calculate_modulated_trace_decay,
+        vdm::revgsp_formulas::calculate_modulated_trace_decay,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::revgsp_formulas::calculate_plasticity_impulse,
+        vdm::revgsp_formulas::calculate_plasticity_impulse,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::revgsp_formulas::update_eligibility_trace,
+        vdm::revgsp_formulas::update_eligibility_trace,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::revgsp_formulas::calculate_weight_change,
+        vdm::revgsp_formulas::calculate_weight_change,
         m
     )?)?;
 
     // Diagnostics formulas
     m.add_function(wrap_pyfunction!(
-        void_dynamics::diagnostics_formulas::calculate_pathology_score,
+        vdm::diagnostics_formulas::calculate_pathology_score,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::diagnostics_formulas::calculate_graph_entropy,
+        vdm::diagnostics_formulas::calculate_graph_entropy,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
-        void_dynamics::diagnostics_formulas::calculate_cartography_time,
+        vdm::diagnostics_formulas::calculate_cartography_time,
         m
     )?)?;
 

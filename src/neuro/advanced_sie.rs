@@ -7,10 +7,10 @@ Commercial use requires written permission from Justin K. Lietz.
 See LICENSE file for full terms.
 */
 
-//! Advanced Stabilized Information-theoretic Engagement (SIE) functions.
+//! Self-Improvement Engine (SIE) multi-objective reward functions.
 //!
-//! This module provides functions for calculating stabilized reward signals
-//! and STDP modulation used in neural plasticity models.
+//! This module provides the stabilized SIE reward calculation and its
+//! reward-dependent STDP modulation support.
 
 use pyo3::prelude::*;
 

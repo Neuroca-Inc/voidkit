@@ -32,7 +32,7 @@ BETA = 0.1        # Universal plasticity rate for GDSP (Goal-Directed dynamics)
 F_REF = 0.02      # Universal reference frequency for time modulation
 PHASE_SENS = 0.5  # Universal phase sensitivity for time modulation
 
-def delta_re_vgsp(W, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynamics=True, domain_modulation=1.0):
+def delta_re_vgsp(W, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynamics=True):
     """
     Void Alpha Function: Synchronizes with Void Omega
     Universal function for VDM Resonance-Enhanced Valence-Gated Synaptic Plasticity.
@@ -45,7 +45,6 @@ def delta_re_vgsp(W, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynami
         f_ref: Reference frequency (defaults to universal constant)
         phase_sens: Phase sensitivity (defaults to universal constant)
         use_time_dynamics: Enable time modulation
-        domain_modulation: Domain-specific scaling factor
     """
     # Use universal constants as defaults
     if alpha is None:
@@ -55,18 +54,15 @@ def delta_re_vgsp(W, t, alpha=None, f_ref=None, phase_sens=None, use_time_dynami
     if phase_sens is None:
         phase_sens = PHASE_SENS
     
-    # Apply domain modulation to alpha
-    effective_alpha = alpha * domain_modulation
-    
     noise = np.random.uniform(-0.02, 0.02)
-    base_delta = effective_alpha * W * (1 - W) + noise
+    base_delta = alpha * W * (1 - W) + noise
     
     if use_time_dynamics:
         phase = np.sin(2 * np.pi * f_ref * t)
         return base_delta * (1 + phase_sens * phase)
     return base_delta
 
-def delta_gdsp(W, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=True, domain_modulation=1.0):
+def delta_gdsp(W, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=True):
     """
     Void Omega Function: Synchronizes with Void Alpha
     Universal function for VDM Goal-Directed Structural Plasticity.
@@ -79,7 +75,6 @@ def delta_gdsp(W, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=T
         f_ref: Reference frequency (defaults to universal constant)
         phase_sens: Phase sensitivity (defaults to universal constant)
         use_time_dynamics: Enable time modulation
-        domain_modulation: Domain-specific scaling factor
     """
     # Use universal constants as defaults
     if beta is None:
@@ -89,10 +84,7 @@ def delta_gdsp(W, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=T
     if phase_sens is None:
         phase_sens = PHASE_SENS
     
-    # Apply domain modulation to beta
-    effective_beta = beta * domain_modulation
-    
-    base_delta = -effective_beta * W
+    base_delta = -beta * W
     
     if use_time_dynamics:
         phase = np.sin(2 * np.pi * f_ref * t)
@@ -101,13 +93,13 @@ def delta_gdsp(W, t, beta=None, f_ref=None, phase_sens=None, use_time_dynamics=T
 
 # ===== SIMPLIFIED INTERFACES FOR COMMON USE CASES =====
 
-def universal_void_dynamics(W, t, domain_modulation=1.0, use_time_dynamics=True):
+def universal_void_dynamics(W, t, use_time_dynamics=True):
     """
     Simplified interface that applies both RE-VGSP and GDSP with universal constants.
     Returns combined delta for single-step evolution.
     """
-    dw_re = delta_re_vgsp(W, t, domain_modulation=domain_modulation, use_time_dynamics=use_time_dynamics)
-    dw_gdsp = delta_gdsp(W, t, domain_modulation=domain_modulation, use_time_dynamics=use_time_dynamics)
+    dw_re = delta_re_vgsp(W, t, use_time_dynamics=use_time_dynamics)
+    dw_gdsp = delta_gdsp(W, t, use_time_dynamics=use_time_dynamics)
     return dw_re + dw_gdsp
 
 def get_universal_constants():
