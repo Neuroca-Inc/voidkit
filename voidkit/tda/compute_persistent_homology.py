@@ -1,47 +1,39 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Persistent-homology adapter with an optional Ripser dependency."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
-# src/tda/compute_persistent_homology.py
+from typing import Dict
 
 import numpy as np
-from typing import Dict
-from ripser import ripser
+
 
 def compute_persistent_homology(
-    data: np.ndarray, 
+    data: np.ndarray,
     max_dim: int = 1,
-    is_distance_matrix: bool = False
+    is_distance_matrix: bool = False,
 ) -> Dict[str, np.ndarray]:
-    """
-    Computes the persistent homology of a point cloud OR a distance matrix.
-    VERSION 3: This version is now fully robust.
+    """Compute persistent homology for a point cloud or distance matrix via Ripser."""
+    try:
+        from ripser import ripser
+    except ImportError as exc:
+        raise ImportError(
+            "compute_persistent_homology requires the optional 'ripser' dependency; "
+            "install VoidKit with the 'tda' extra."
+        ) from exc
 
-    Args:
-        data (np.ndarray): A 2D NumPy array representing either:
-                             - A point cloud (n_points, n_features)
-                             - A square distance matrix (n_points, n_points)
-        max_dim (int, optional): The maximum dimension of homology to compute.
-        is_distance_matrix (bool): Flag indicating if the input data is a
-                                     pre-computed distance matrix.
-
-    Returns:
-        Dict[str, np.ndarray]: A dictionary from ripser containing the results.
-    """
-    if not isinstance(data, np.ndarray) or data.ndim != 2:
-        raise TypeError("Input data must be a 2D NumPy array.")
-    if is_distance_matrix and data.shape[0] != data.shape[1]:
-        raise ValueError("A distance matrix must be square.")
-
+    values = np.asarray(data, dtype=float)
+    if values.ndim != 2 or values.shape[0] == 0:
+        raise ValueError("data must be a non-empty two-dimensional array.")
+    if not np.all(np.isfinite(values)):
+        raise ValueError("data must contain only finite values.")
+    if max_dim < 0:
+        raise ValueError("max_dim must be non-negative.")
     if is_distance_matrix:
-        # Data is a pre-computed square distance matrix
-        result = ripser(data, maxdim=max_dim, distance_matrix=True)
-    else:
-        # Data is a point cloud
-        result = ripser(data, maxdim=max_dim, distance_matrix=False)
-    
-    return result
+        if values.shape[0] != values.shape[1]:
+            raise ValueError("A distance matrix must be square.")
+        if not np.allclose(values, values.T, atol=1e-10, rtol=1e-8):
+            raise ValueError("A distance matrix must be symmetric.")
+        if np.any(values < 0.0) or not np.allclose(np.diag(values), 0.0, atol=1e-10):
+            raise ValueError("A distance matrix must be non-negative with a zero diagonal.")
+
+    return ripser(values, maxdim=max_dim, distance_matrix=is_distance_matrix)

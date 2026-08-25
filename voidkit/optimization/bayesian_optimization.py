@@ -1,83 +1,77 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Bayesian-optimization adapter with an optional scikit-optimize dependency."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Any, Callable, Dict, List
 
 import numpy as np
-from typing import Callable, List, Tuple, Dict, Any
-from skopt import gp_minimize
-from skopt.space import Real, Integer, Categorical
+
 
 def bayesian_optimization(
     objective_func: Callable[[List[Any]], float],
     param_space: List[Dict[str, Any]],
     n_calls: int = 50,
     n_initial_points: int = 10,
-    random_state: int = 0
+    random_state: int = 0,
 ) -> Dict[str, Any]:
-    """
-    Performs Bayesian optimization on a given objective function.
+    """Minimize an objective with Gaussian-process Bayesian optimization."""
+    try:
+        from skopt import gp_minimize
+        from skopt.space import Categorical, Integer, Real
+    except ImportError as exc:
+        raise ImportError(
+            "bayesian_optimization requires the optional 'scikit-optimize' dependency; "
+            "install VoidKit with the 'optimization' extra."
+        ) from exc
 
-    Parameters
-    ----------
-    objective_func : Callable[[List[Any]], float]
-        The objective function to minimize. It must take a list of parameters
-        and return a single float value.
-    param_space : List[Dict[str, Any]]
-        A list of dictionaries defining the search space for each parameter.
-        Each dictionary should have 'type', 'name', and 'range' keys.
-        - 'type': 'real', 'integer', or 'categorical'.
-        - 'name': The name of the parameter.
-        - 'range': A tuple for 'real' and 'integer' (e.g., (1e-6, 1e-1)),
-                   or a list of categories for 'categorical'.
-    n_calls : int, optional
-        The number of calls to the objective function, by default 50.
-    n_initial_points : int, optional
-        The number of random points to sample before starting the optimization,
-        by default 10.
-    random_state : int, optional
-        The random state for reproducibility, by default 0.
+    if not callable(objective_func):
+        raise TypeError("objective_func must be callable.")
+    if not isinstance(param_space, list) or not param_space:
+        raise ValueError("param_space must be a non-empty list of parameter specifications.")
+    if n_calls < 1 or n_initial_points < 1 or n_initial_points > n_calls:
+        raise ValueError("Require 1 <= n_initial_points <= n_calls.")
 
-    Returns
-    -------
-    Dict[str, Any]
-        A dictionary containing the results of the optimization, including:
-        - 'best_params': A dictionary of the best parameters found.
-        - 'best_value': The minimum value of the objective function found.
-        - 'result_object': The full result object from gp_minimize.
-    """
     space = []
-    param_names = []
-    for p in param_space:
-        param_names.append(p['name'])
-        if p['type'] == 'real':
-            space.append(Real(p['range'][0], p['range'][1], name=p['name']))
-        elif p['type'] == 'integer':
-            space.append(Integer(p['range'][0], p['range'][1], name=p['name']))
-        elif p['type'] == 'categorical':
-            space.append(Categorical(p['range'], name=p['name']))
-        else:
-            raise ValueError(f"Unsupported parameter type: {p['type']}")
+    names = []
+    seen = set()
+    for spec in param_space:
+        if not isinstance(spec, dict):
+            raise TypeError("Each parameter specification must be a dictionary.")
+        missing = {"type", "name", "range"} - set(spec)
+        if missing:
+            raise ValueError(f"Parameter specification missing keys: {sorted(missing)}")
+        name = spec["name"]
+        if not isinstance(name, str) or not name or name in seen:
+            raise ValueError("Parameter names must be non-empty and unique.")
+        seen.add(name)
+        names.append(name)
 
-    # Wrapper for the objective function to match skopt's expected input
-    def objective_wrapper(params):
-        return objective_func(params)
+        kind = spec["type"]
+        domain = spec["range"]
+        if kind == "real":
+            if len(domain) != 2 or not np.isfinite(domain[0]) or not np.isfinite(domain[1]) or domain[0] >= domain[1]:
+                raise ValueError(f"Real parameter {name!r} requires finite increasing bounds.")
+            space.append(Real(domain[0], domain[1], name=name))
+        elif kind == "integer":
+            if len(domain) != 2 or domain[0] > domain[1]:
+                raise ValueError(f"Integer parameter {name!r} requires ordered bounds.")
+            space.append(Integer(domain[0], domain[1], name=name))
+        elif kind == "categorical":
+            if not domain:
+                raise ValueError(f"Categorical parameter {name!r} requires at least one category.")
+            space.append(Categorical(domain, name=name))
+        else:
+            raise ValueError(f"Unsupported parameter type: {kind!r}")
 
     result = gp_minimize(
-        objective_wrapper,
+        objective_func,
         space,
         n_calls=n_calls,
         n_initial_points=n_initial_points,
-        random_state=random_state
+        random_state=random_state,
     )
-
-    best_params = {param_names[i]: result.x[i] for i in range(len(param_names))}
-
     return {
-        'best_params': best_params,
-        'best_value': result.fun,
-        'result_object': result
+        "best_params": dict(zip(names, result.x)),
+        "best_value": float(result.fun),
+        "result_object": result,
     }

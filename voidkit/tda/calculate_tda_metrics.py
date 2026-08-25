@@ -1,49 +1,40 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Persistence-diagram summary metrics."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
-import numpy as np
 from typing import Dict, List
 
-def calculate_tda_metrics(
-    persistence_diagrams: List[np.ndarray]
-) -> Dict[str, float]:
-    """
-    Calculates TDA metrics from persistence diagrams.
+import numpy as np
 
-    Parameters
-    ----------
-    persistence_diagrams : List[np.ndarray]
-        A list of persistence diagrams for each dimension, as returned by ripser.
 
-    Returns
-    -------
-    Dict[str, float]
-        A dictionary containing the calculated TDA metrics, including:
-        - 'total_b1_persistence': The sum of persistence of 1-dimensional features.
-        - 'component_count': The number of connected components (0-dimensional features).
-    """
-    if not isinstance(persistence_diagrams, list):
-        raise TypeError("persistence_diagrams must be a list of numpy arrays.")
+def calculate_tda_metrics(persistence_diagrams: List[np.ndarray]) -> Dict[str, float]:
+    """Summarize H0/H1 persistence diagrams without letting essential bars pollute totals."""
+    if not isinstance(persistence_diagrams, list) or not persistence_diagrams:
+        raise TypeError("persistence_diagrams must be a non-empty list of arrays.")
 
-    metrics = {}
+    diagrams = []
+    for diagram in persistence_diagrams:
+        values = np.asarray(diagram, dtype=float)
+        if values.ndim != 2 or values.shape[1] != 2:
+            raise ValueError("Each persistence diagram must have shape (n_features, 2).")
+        if np.any(np.isnan(values)):
+            raise ValueError("Persistence diagrams may not contain NaN values.")
+        diagrams.append(values)
 
-    # H0: Connected components
-    h0 = persistence_diagrams[0]
-    # The number of components is the number of points with infinite persistence.
-    # In ripser, infinite persistence is represented by np.inf.
-    metrics['component_count'] = np.sum(np.isinf(h0[:, 1]))
+    h0 = diagrams[0]
+    essential_h0 = int(np.sum(np.isinf(h0[:, 1]))) if h0.size else 0
 
-    # H1: Loops/cycles
-    if len(persistence_diagrams) > 1:
-        h1 = persistence_diagrams[1]
-        persistence = h1[:, 1] - h1[:, 0]
-        metrics['total_b1_persistence'] = np.sum(persistence)
-    else:
-        metrics['total_b1_persistence'] = 0.0
-        
-    return metrics
+    total_b1 = 0.0
+    essential_b1 = 0
+    if len(diagrams) > 1 and diagrams[1].size:
+        h1 = diagrams[1]
+        finite = np.isfinite(h1[:, 1])
+        total_b1 = float(np.sum(h1[finite, 1] - h1[finite, 0]))
+        essential_b1 = int(np.sum(~finite))
+
+    return {
+        "component_count": essential_h0,
+        "essential_h0_count": essential_h0,
+        "total_b1_persistence": total_b1,
+        "essential_b1_count": essential_b1,
+    }

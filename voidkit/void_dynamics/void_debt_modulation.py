@@ -7,7 +7,7 @@ and learning stability principles. This replaces arbitrary scaling with
 mathematically derived modulation factors.
 """
 import numpy as np
-from VDM_Void_Equations import get_universal_constants
+from .void_equations import get_universal_constants
 
 class VoidDebtModulation:
     """Class to derive domain modulation factors from void debt principles."""

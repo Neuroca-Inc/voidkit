@@ -1,53 +1,58 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Fractal-dimension estimators."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
 import numpy as np
 
+
 def calculate_fractal_dimension(points: np.ndarray, threshold: float = 0.9) -> float:
-    """
-    Calculates the fractal dimension of a point set using the box-counting algorithm.
+    """Estimate box-counting dimension of a finite point cloud.
 
-    Parameters
-    ----------
-    points : np.ndarray
-        A numpy array of shape (n_points, n_features) representing the data.
-    threshold : float, optional
-        The threshold for the number of points in a box to be considered "filled",
-        by default 0.9.
-
-    Returns
-    -------
-    float
-        The estimated fractal dimension.
+    Coordinates are normalized to the unit box before counting occupied boxes at
+    dyadic scales. ``threshold`` is the maximum occupied-box fraction used in the
+    regression; it suppresses scales where the count has saturated at roughly one
+    occupied box per sample.
     """
-    # Find the bounding box of the point set
-    min_coords = np.min(points, axis=0)
-    max_coords = np.max(points, axis=0)
-    
-    # A list of scales to use
-    scales = np.logspace(0.01, 1, num=10, endpoint=False, base=2)
-    
-    counts = []
-    for scale in scales:
-        box_size = (max_coords - min_coords) / scale
-        
-        # Create a grid of boxes
-        grid = {}
-        for point in points:
-            box_index = tuple(np.floor((point - min_coords) / box_size).astype(int))
-            if box_index not in grid:
-                grid[box_index] = 0
-            grid[box_index] += 1
-            
-        # Count the number of non-empty boxes
-        counts.append(len(grid))
-        
-    # Fit a line to the log-log plot of counts vs. scales
-    coeffs = np.polyfit(np.log(scales), np.log(counts), 1)
-    
-    return -coeffs[0]
+    data = np.asarray(points, dtype=float)
+    if data.ndim != 2 or data.shape[0] < 4 or data.shape[1] < 1:
+        raise ValueError("points must have shape (n_points, n_features) with at least 4 points.")
+    if not np.all(np.isfinite(data)):
+        raise ValueError("points must contain only finite values.")
+    if not 0.0 < threshold <= 1.0:
+        raise ValueError("threshold must satisfy 0 < threshold <= 1.")
+
+    mins = data.min(axis=0)
+    spans = data.max(axis=0) - mins
+    active = spans > 0.0
+    if not np.any(active):
+        return 0.0
+
+    normalized = (data[:, active] - mins[active]) / spans[active]
+    n_points = normalized.shape[0]
+    max_k = max(3, min(16, int(np.ceil(np.log2(max(n_points, 2)))) + 2))
+
+    inverse_scales: list[float] = []
+    counts: list[int] = []
+    for k in range(1, max_k + 1):
+        inv_eps = float(2**k)
+        indices = np.floor(normalized * inv_eps).astype(np.int64)
+        indices = np.minimum(indices, int(inv_eps) - 1)
+        count = int(np.unique(indices, axis=0).shape[0])
+        inverse_scales.append(inv_eps)
+        counts.append(count)
+
+    inverse_scales_arr = np.asarray(inverse_scales, dtype=float)
+    counts_arr = np.asarray(counts, dtype=float)
+    usable = (counts_arr > 1.0) & (counts_arr < threshold * n_points)
+
+    if np.count_nonzero(usable) < 3:
+        usable = (counts_arr > 1.0) & (counts_arr < n_points)
+    if np.count_nonzero(usable) < 2:
+        return 0.0
+
+    slope, _ = np.polyfit(
+        np.log(inverse_scales_arr[usable]),
+        np.log(counts_arr[usable]),
+        1,
+    )
+    return float(max(0.0, slope))

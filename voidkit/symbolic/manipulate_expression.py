@@ -6,7 +6,7 @@ research while ensuring commercial applications are aligned with the project's e
 See LICENSE file for full terms.
 """
 
-from sympy import expand, factor, simplify, subs
+from sympy import expand, factor, simplify
 from typing import Any, Dict
 
 def manipulate_expression(

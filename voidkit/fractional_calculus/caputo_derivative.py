@@ -1,47 +1,48 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Fractional-calculus operators."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
 import numpy as np
 from scipy.special import gamma
 
+
 def caputo_derivative(
-    f: np.ndarray, 
-    alpha: float, 
-    dt: float = 1.0
+    f: np.ndarray,
+    alpha: float,
+    dt: float = 1.0,
 ) -> np.ndarray:
+    """Approximate the Caputo derivative of order ``alpha`` on a uniform grid.
+
+    The implementation uses the classical L1 discretization for ``0 < alpha < 1``.
+    For samples ``f[n] = f(t_n)`` with ``t_n = n * dt``, the approximation is
+
+    ``D_C^alpha f(t_n) ~= dt^-alpha / Gamma(2-alpha) *
+    sum_k b_k (f[n-k] - f[n-k-1])``
+
+    with ``b_k = (k+1)^(1-alpha) - k^(1-alpha)``.
+
+    This formulation preserves the defining Caputo property that constants have
+    zero fractional derivative.
     """
-    Calculates the Caputo fractional derivative of a time series.
+    values = np.asarray(f, dtype=float)
+    if values.ndim != 1:
+        raise ValueError("f must be a one-dimensional array.")
+    if values.size == 0:
+        return np.array([], dtype=float)
+    if not np.all(np.isfinite(values)):
+        raise ValueError("f must contain only finite values.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must satisfy 0 < alpha < 1.")
+    if not np.isfinite(dt) or dt <= 0.0:
+        raise ValueError("dt must be a positive finite value.")
 
-    This implementation uses the Grunwald-Letnikov formula.
+    result = np.zeros_like(values, dtype=float)
+    increments = np.diff(values)
+    prefactor = dt ** (-alpha) / gamma(2.0 - alpha)
 
-    Parameters
-    ----------
-    f : np.ndarray
-        A 1D numpy array representing the time series.
-    alpha : float
-        The order of the fractional derivative (0 < alpha < 1).
-    dt : float, optional
-        The time step between samples, by default 1.0.
+    for n in range(1, values.size):
+        k = np.arange(n, dtype=float)
+        weights = (k + 1.0) ** (1.0 - alpha) - k ** (1.0 - alpha)
+        result[n] = prefactor * np.dot(weights, increments[n - 1 :: -1])
 
-    Returns
-    -------
-    np.ndarray
-        The Caputo fractional derivative of the time series.
-    """
-    n = len(f)
-    result = np.zeros(n)
-    
-    for i in range(n):
-        summation = 0
-        for k in range(i + 1):
-            # Grunwald-Letnikov coefficients
-            coeff = (gamma(k - alpha) / (gamma(-alpha) * gamma(k + 1)))
-            summation += coeff * f[i - k]
-        result[i] = summation / (dt**alpha)
-        
     return result

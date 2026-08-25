@@ -1,56 +1,77 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Stochastic differential-equation solvers."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Callable, Optional, Tuple
 
 import numpy as np
-from typing import Callable, Tuple
+
 
 def sde_solver(
     drift_func: Callable[[np.ndarray], np.ndarray],
     diffusion_func: Callable[[np.ndarray], np.ndarray],
     initial_state: np.ndarray,
     t_span: Tuple[float, float],
-    dt: float
+    dt: float,
+    rng: Optional[np.random.Generator] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    """Solve an Itô SDE with Euler-Maruyama on a bounded time grid.
+
+    ``diffusion_func`` may return a scalar, a vector with one independent noise
+    channel per state variable, or a matrix of shape ``(n_state, n_noise)``.
+    When ``dt`` does not divide the interval exactly, the final step is shortened
+    so returned times and state increments describe the same grid.
     """
-    Solves a system of stochastic differential equations (SDEs) using the
-    Euler-Maruyama method.
+    state0 = np.asarray(initial_state, dtype=float)
+    if state0.ndim != 1 or state0.size == 0 or not np.all(np.isfinite(state0)):
+        raise ValueError("initial_state must be a non-empty finite 1-D array.")
+    if len(t_span) != 2:
+        raise ValueError("t_span must contain exactly (t_start, t_end).")
+    t_start, t_end = map(float, t_span)
+    if not np.isfinite(t_start) or not np.isfinite(t_end) or t_end <= t_start:
+        raise ValueError("t_span must be finite with t_end > t_start.")
+    if not np.isfinite(dt) or dt <= 0.0:
+        raise ValueError("dt must be a positive finite value.")
 
-    dx/dt = drift_func(x) + diffusion_func(x) * dW_t
+    span = t_end - t_start
+    full_steps = int(np.floor(span / dt))
+    times = t_start + np.arange(full_steps + 1, dtype=float) * dt
+    tolerance = np.finfo(float).eps * max(1.0, abs(t_end)) * 8.0
+    if t_end - times[-1] > tolerance:
+        times = np.append(times, t_end)
+    else:
+        times[-1] = t_end
 
-    Parameters
-    ----------
-    drift_func : Callable[[np.ndarray], np.ndarray]
-        The drift function of the SDE.
-    diffusion_func : Callable[[np.ndarray], np.ndarray]
-        The diffusion function of the SDE.
-    initial_state : np.ndarray
-        The initial state of the system.
-    t_span : Tuple[float, float]
-        The time span of the simulation (t_start, t_end).
-    dt : float
-        The time step of the simulation.
+    states = np.empty((times.size, state0.size), dtype=float)
+    states[0] = state0
+    generator = rng if rng is not None else np.random.default_rng()
 
-    Returns
-    -------
-    Tuple[np.ndarray, np.ndarray]
-        A tuple containing:
-        - The time points of the simulation.
-        - The state of the system at each time point.
-    """
-    n_steps = int((t_span[1] - t_span[0]) / dt)
-    times = np.linspace(t_span[0], t_span[1], n_steps + 1)
-    states = np.zeros((n_steps + 1, len(initial_state)))
-    states[0] = initial_state
+    for i, step in enumerate(np.diff(times)):
+        current = states[i]
+        drift = np.asarray(drift_func(current.copy()), dtype=float)
+        if drift.shape != current.shape or not np.all(np.isfinite(drift)):
+            raise ValueError("drift_func must return a finite vector matching the state shape.")
 
-    for i in range(n_steps):
-        dW = np.random.normal(0, np.sqrt(dt), len(initial_state))
-        drift = drift_func(states[i])
-        diffusion = diffusion_func(states[i])
-        states[i+1] = states[i] + drift * dt + diffusion * dW
+        diffusion = np.asarray(diffusion_func(current.copy()), dtype=float)
+        if diffusion.ndim == 0:
+            d_w = generator.normal(0.0, np.sqrt(step), size=current.size)
+            stochastic = float(diffusion) * d_w
+        elif diffusion.shape == current.shape:
+            if not np.all(np.isfinite(diffusion)):
+                raise ValueError("diffusion_func returned non-finite values.")
+            d_w = generator.normal(0.0, np.sqrt(step), size=current.size)
+            stochastic = diffusion * d_w
+        elif diffusion.ndim == 2 and diffusion.shape[0] == current.size:
+            if not np.all(np.isfinite(diffusion)):
+                raise ValueError("diffusion_func returned non-finite values.")
+            d_w = generator.normal(0.0, np.sqrt(step), size=diffusion.shape[1])
+            stochastic = diffusion @ d_w
+        else:
+            raise ValueError(
+                "diffusion_func must return a scalar, state-shaped vector, or "
+                "(n_state, n_noise) matrix."
+            )
+
+        states[i + 1] = current + drift * step + stochastic
 
     return times, states

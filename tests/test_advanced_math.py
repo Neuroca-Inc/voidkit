@@ -12,8 +12,8 @@ def test_descriptive_stats_basic():
     assert out["count"] == 4
     assert out["mean"] == pytest.approx(2.5)
     assert out["median"] == pytest.approx(2.5)
-    assert out["var"] == pytest.approx(1.6666666667, rel=1e-12)
-    assert out["std"] == pytest.approx(math.sqrt(1.6666666667), rel=1e-12)
+    assert out["var"] == pytest.approx(5.0 / 3.0, rel=1e-12)
+    assert out["std"] == pytest.approx(math.sqrt(5.0 / 3.0), rel=1e-12)
     assert out["min"] == 1
     assert out["max"] == 4
     assert out["q1"] == pytest.approx(1.75)

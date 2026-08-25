@@ -1,68 +1,62 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Stochastic simulation algorithms."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Callable, Optional, Tuple
 
 import numpy as np
-from typing import Callable, List, Tuple
+
 
 def gillespie_simulation(
     initial_state: np.ndarray,
     propensity_func: Callable[[np.ndarray], np.ndarray],
     stoichiometry: np.ndarray,
-    t_max: float
+    t_max: float,
+    rng: Optional[np.random.Generator] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Performs a Gillespie simulation (Stochastic Simulation Algorithm).
+    """Simulate a reaction network with the Gillespie direct SSA.
 
-    Parameters
-    ----------
-    initial_state : np.ndarray
-        A 1D numpy array of the initial counts of each species.
-    propensity_func : Callable[[np.ndarray], np.ndarray]
-        A function that takes the current state and returns the propensities
-        (reaction rates) for each reaction.
-    stoichiometry : np.ndarray
-        A 2D numpy array of shape (n_reactions, n_species) that defines the
-        change in species counts for each reaction.
-    t_max : float
-        The maximum simulation time.
-
-    Returns
-    -------
-    Tuple[np.ndarray, np.ndarray]
-        A tuple containing:
-        - The time points of the simulation.
-        - The state of the system at each time point.
+    Reactions sampled beyond ``t_max`` are not executed. Propensities must be
+    finite and non-negative, and state/stoichiometry dimensions are validated
+    before simulation.
     """
+    state = np.asarray(initial_state).copy()
+    stoich = np.asarray(stoichiometry)
+
+    if state.ndim != 1 or state.size == 0:
+        raise ValueError("initial_state must be a non-empty one-dimensional array.")
+    if stoich.ndim != 2 or stoich.shape[1] != state.size:
+        raise ValueError("stoichiometry must have shape (n_reactions, n_species).")
+    if not np.isfinite(t_max) or t_max < 0.0:
+        raise ValueError("t_max must be a non-negative finite value.")
+
+    generator = rng if rng is not None else np.random.default_rng()
     times = [0.0]
-    states = [initial_state.copy()]
-    
+    states = [state.copy()]
     t = 0.0
-    current_state = initial_state.copy()
 
     while t < t_max:
-        propensities = propensity_func(current_state)
-        total_propensity = np.sum(propensities)
+        propensities = np.asarray(propensity_func(state.copy()), dtype=float)
+        if propensities.ndim != 1 or propensities.size != stoich.shape[0]:
+            raise ValueError("propensity_func must return one propensity per reaction.")
+        if not np.all(np.isfinite(propensities)):
+            raise ValueError("Propensities must be finite.")
+        if np.any(propensities < 0.0):
+            raise ValueError("Propensities must be non-negative.")
 
-        if total_propensity == 0:
+        total_propensity = float(np.sum(propensities))
+        if total_propensity <= 0.0:
             break
 
-        # Time to next reaction
-        dt = -np.log(np.random.rand()) / total_propensity
-        
-        # Which reaction occurs?
-        reaction_probs = propensities / total_propensity
-        reaction_index = np.random.choice(len(propensities), p=reaction_probs)
+        dt = float(generator.exponential(1.0 / total_propensity))
+        next_time = t + dt
+        if next_time > t_max:
+            break
 
-        # Update state
-        current_state += stoichiometry[reaction_index]
-        t += dt
-
+        reaction_index = int(generator.choice(propensities.size, p=propensities / total_propensity))
+        state = state + stoich[reaction_index]
+        t = next_time
         times.append(t)
-        states.append(current_state.copy())
+        states.append(state.copy())
 
-    return np.array(times), np.array(states)
+    return np.asarray(times, dtype=float), np.asarray(states)

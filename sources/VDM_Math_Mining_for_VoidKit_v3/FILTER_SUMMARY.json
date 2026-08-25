@@ -1,0 +1,18 @@
+{
+  "inspected": 2051,
+  "counts": {
+    "direct": 264,
+    "support": 4
+  },
+  "retained": 268,
+  "removed": 1783,
+  "syntax": {
+    "PASS": 260
+  },
+  "drop_reasons": {
+    "not a useful math/solver mining target": 349,
+    "third-party/vendor source; depend on library instead of mining copy": 1266,
+    "test/build/verification/plot/control/package utility": 167,
+    "byte-identical duplicate of native_color_flux.py": 1
+  }
+}

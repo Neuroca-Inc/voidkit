@@ -1,12 +1,9 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Graph-dynamics utilities."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
 import numpy as np
+
 
 def simulate_sparsity_evolution(
     initial_sparsity: float,
@@ -14,71 +11,46 @@ def simulate_sparsity_evolution(
     mu: float,
     spike_events: np.ndarray,
     dt: float,
-    t_max: float
+    t_max: float,
 ) -> np.ndarray:
-    """
-    Simulates the evolution of graph sparsity over time.
+    """Integrate the legacy sparsity evolution law with explicit Euler steps."""
+    events = np.asarray(spike_events, dtype=float)
+    if events.ndim != 1 or not np.all(np.isfinite(events)):
+        raise ValueError("spike_events must be a finite one-dimensional array.")
+    if not 0.0 <= initial_sparsity <= 1.0:
+        raise ValueError("initial_sparsity must satisfy 0 <= s <= 1.")
+    if not np.isfinite(dt) or dt <= 0.0 or not np.isfinite(t_max) or t_max < 0.0:
+        raise ValueError("dt must be positive and t_max non-negative; both must be finite.")
+    if not np.isfinite(kappa) or not np.isfinite(mu):
+        raise ValueError("kappa and mu must be finite.")
 
-    ds/dt = -κ * s * (1 - s) + μ * Σspike_t
-
-    Parameters
-    ----------
-    initial_sparsity : float
-        The initial sparsity of the graph.
-    kappa : float
-        The decay parameter.
-    mu : float
-        The growth parameter.
-    spike_events : np.ndarray
-        A 1D array of the number of spike events at each time step.
-    dt : float
-        The time step.
-    t_max : float
-        The maximum simulation time.
-
-    Returns
-    -------
-    np.ndarray
-        An array of the sparsity at each time step.
-    """
-    n_steps = int(t_max / dt)
-    sparsity = np.zeros(n_steps + 1)
+    n_steps = int(np.floor(t_max / dt))
+    if events.size < n_steps:
+        raise ValueError("spike_events must contain at least one value per integration step.")
+    sparsity = np.empty(n_steps + 1, dtype=float)
     sparsity[0] = initial_sparsity
-
     for i in range(n_steps):
-        ds_dt = -kappa * sparsity[i] * (1 - sparsity[i]) + mu * spike_events[i]
-        sparsity[i+1] = sparsity[i] + ds_dt * dt
-        
+        ds_dt = -kappa * sparsity[i] * (1.0 - sparsity[i]) + mu * events[i]
+        sparsity[i + 1] = sparsity[i] + ds_dt * dt
     return sparsity
+
 
 def calculate_path_score(
     weights: np.ndarray,
     spike_times: np.ndarray,
     distances: np.ndarray,
-    lambda_reg: float
+    lambda_reg: float,
 ) -> float:
-    """
-    Calculates a score for a path in the graph.
-
-    path_score = Σw_ij * spike_t * e^(-d_ij/λ)
-
-    Parameters
-    ----------
-    weights : np.ndarray
-        The weights of the edges in the path.
-    spike_times : np.ndarray
-        The spike times at each node in the path.
-    distances : np.ndarray
-        The distances between nodes in the path.
-    lambda_reg : float
-        The distance decay parameter.
-
-    Returns
-    -------
-    float
-        The calculated path score.
-    """
-    path_score = 0.0
-    for i in range(len(weights)):
-        path_score += weights[i] * spike_times[i] * np.exp(-distances[i] / lambda_reg)
-    return path_score
+    """Evaluate ``sum(w * spike_time * exp(-distance/lambda_reg))``."""
+    w = np.asarray(weights, dtype=float)
+    spikes = np.asarray(spike_times, dtype=float)
+    dist = np.asarray(distances, dtype=float)
+    if w.ndim != 1 or spikes.ndim != 1 or dist.ndim != 1 or not (w.size == spikes.size == dist.size):
+        raise ValueError("weights, spike_times, and distances must be equal-length 1-D arrays.")
+    if not np.all(np.isfinite(w)) or not np.all(np.isfinite(spikes)) or not np.all(np.isfinite(dist)):
+        raise ValueError("Path inputs must be finite.")
+    if np.any(dist < 0.0):
+        raise ValueError("distances must be non-negative.")
+    if not np.isfinite(lambda_reg) or lambda_reg <= 0.0:
+        raise ValueError("lambda_reg must be positive and finite.")
+    return float(np.sum(w * spikes * np.exp(-dist / lambda_reg)))

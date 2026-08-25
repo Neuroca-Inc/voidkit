@@ -1,41 +1,25 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Recombination operators."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Optional
 
 import numpy as np
+
 
 def apply_recombination(
     weights1: np.ndarray,
     weights2: np.ndarray,
-    recombination_prob: float = 0.5
+    recombination_prob: float = 0.5,
+    rng: Optional[np.random.Generator] = None,
 ) -> np.ndarray:
-    """
-    Performs crossover/recombination between two sets of weights.
-
-    Parameters
-    ----------
-    weights1 : np.ndarray
-        The first set of weights.
-    weights2 : np.ndarray
-        The second set of weights.
-    recombination_prob : float, optional
-        The probability of choosing a weight from the first set, by default 0.5.
-
-    Returns
-    -------
-    np.ndarray
-        The new set of weights after recombination.
-    """
-    if weights1.shape != weights2.shape:
+    """Perform elementwise crossover between equal-shaped parent arrays."""
+    first = np.asarray(weights1)
+    second = np.asarray(weights2)
+    if first.shape != second.shape:
         raise ValueError("Weight arrays must have the same shape.")
-        
-    recombination_mask = np.random.rand(*weights1.shape) < recombination_prob
-    
-    new_weights = weights1.copy()
-    new_weights[~recombination_mask] = weights2[~recombination_mask]
-    
-    return new_weights
+    if not 0.0 <= recombination_prob <= 1.0:
+        raise ValueError("recombination_prob must satisfy 0 <= p <= 1.")
+    generator = rng if rng is not None else np.random.default_rng()
+    choose_first = generator.random(first.shape) < recombination_prob
+    return np.where(choose_first, first, second)

@@ -1,60 +1,42 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Spike-burst detection."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
 import numpy as np
 
+
 def detect_bursts(
-    spike_times: np.ndarray, 
+    spike_times: np.ndarray,
     max_interspike_interval: float = 10.0,
-    min_spikes_in_burst: int = 3
+    min_spikes_in_burst: int = 3,
 ) -> np.ndarray:
-    """
-    Detects bursts of spikes in a spike train.
+    """Detect maximal spike runs whose consecutive gaps stay below a threshold."""
+    spikes = np.asarray(spike_times, dtype=float)
+    if spikes.ndim != 1:
+        raise ValueError("spike_times must be one-dimensional.")
+    if not np.all(np.isfinite(spikes)):
+        raise ValueError("spike_times must be finite.")
+    if np.any(np.diff(spikes) < 0.0):
+        raise ValueError("spike_times must be sorted in non-decreasing order.")
+    if not np.isfinite(max_interspike_interval) or max_interspike_interval < 0.0:
+        raise ValueError("max_interspike_interval must be non-negative and finite.")
+    if min_spikes_in_burst < 2:
+        raise ValueError("min_spikes_in_burst must be at least 2.")
+    if spikes.size < min_spikes_in_burst:
+        return np.empty((0, 2), dtype=float)
 
-    A burst is defined as a sequence of spikes where the inter-spike interval
-    is less than or equal to max_interspike_interval.
-
-    Parameters
-    ----------
-    spike_times : np.ndarray
-        A 1D numpy array of spike times.
-    max_interspike_interval : float, optional
-        The maximum time between spikes to be considered part of a burst, 
-        by default 10.0.
-    min_spikes_in_burst : int, optional
-        The minimum number of spikes required to form a burst, by default 3.
-
-    Returns
-    -------
-    np.ndarray
-        An array of the start and end times of the detected bursts.
-    """
-    if len(spike_times) < min_spikes_in_burst:
-        return np.array([])
-
-    interspike_intervals = np.diff(spike_times)
-    is_in_burst = interspike_intervals <= max_interspike_interval
-
+    linked = np.diff(spikes) <= max_interspike_interval
     bursts = []
-    current_burst_start = -1
+    start = 0
+    for gap_index, stays_linked in enumerate(linked):
+        if stays_linked:
+            continue
+        end = gap_index
+        if end - start + 1 >= min_spikes_in_burst:
+            bursts.append((spikes[start], spikes[end]))
+        start = gap_index + 1
 
-    for i in range(len(is_in_burst)):
-        if is_in_burst[i] and current_burst_start == -1:
-            current_burst_start = spike_times[i]
-        elif not is_in_burst[i] and current_burst_start != -1:
-            burst_end = spike_times[i]
-            if (i - np.where(spike_times == current_burst_start)[0][0] + 1) >= min_spikes_in_burst:
-                bursts.append([current_burst_start, burst_end])
-            current_burst_start = -1
-            
-    if current_burst_start != -1:
-        burst_end = spike_times[-1]
-        if (len(spike_times) - np.where(spike_times == current_burst_start)[0][0]) >= min_spikes_in_burst:
-            bursts.append([current_burst_start, burst_end])
-
-    return np.array(bursts)
+    end = spikes.size - 1
+    if end - start + 1 >= min_spikes_in_burst:
+        bursts.append((spikes[start], spikes[end]))
+    return np.asarray(bursts, dtype=float).reshape(-1, 2)

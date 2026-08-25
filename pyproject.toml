@@ -7,7 +7,7 @@ build-backend = "hatchling.build"
 [project]
 name = "voidkit"
 version = "0.1.0"
-description = "Unified Void Dynamics Model (VDM) toolkit for void dynamics: REVGSP, SIE, TDA, and related formulas."
+description = "VDM-branded centralized Python mathematics toolkit for numerical, dynamical, stochastic, topological, information-theoretic, and specialized research methods."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
@@ -41,8 +41,27 @@ voidkit-stats = "voidkit.advanced_math.calculate_descriptive_stats:main"
 voidkit-diff = "voidkit.advanced_math.symbolic_differentiation:main"
 
 [project.optional-dependencies]
-# Optional extras (not installed by default)
+# Specialist namespaces remain optional so the numerical core stays lightweight.
 symbolic = ["sympy>=1.12"]
+graphs = ["networkx>=3.0"]
+causal = ["statsmodels>=0.14"]
+tda = ["ripser>=0.6.8"]
+clustering = ["networkx>=3.0", "scikit-learn>=1.3"]
+optimization = ["scikit-optimize>=0.10"]
+plotting = ["matplotlib>=3.7"]
+semantic = ["scikit-learn>=1.3"]
+structural = ["networkx>=3.0"]
+vdm = ["torch>=2.0"]
+all = [
+  "sympy>=1.12",
+  "networkx>=3.0",
+  "statsmodels>=0.14",
+  "ripser>=0.6.8",
+  "scikit-learn>=1.3",
+  "scikit-optimize>=0.10",
+  "matplotlib>=3.7",
+  "torch>=2.0",
+]
 
 # [project.entry-points."hatch.metadata.hooks"]
 # voidkit-metadata = "tools.metadata_hooks:VoidkitMetadataHook"

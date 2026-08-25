@@ -1,40 +1,27 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Mutation operators."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Optional
 
 import numpy as np
+
 
 def apply_mutation(
     weights: np.ndarray,
     mutation_rate: float = 0.01,
-    mutation_scale: float = 0.1
+    mutation_scale: float = 0.1,
+    rng: Optional[np.random.Generator] = None,
 ) -> np.ndarray:
-    """
-    Applies random mutations to a set of weights.
-
-    Parameters
-    ----------
-    weights : np.ndarray
-        The weights to mutate.
-    mutation_rate : float, optional
-        The probability of each weight being mutated, by default 0.01.
-    mutation_scale : float, optional
-        The standard deviation of the Gaussian noise to add to the weights,
-        by default 0.1.
-
-    Returns
-    -------
-    np.ndarray
-        The mutated weights.
-    """
-    mutation_mask = np.random.rand(*weights.shape) < mutation_rate
-    mutations = np.random.normal(0, mutation_scale, weights.shape)
-    
-    mutated_weights = weights.copy()
-    mutated_weights[mutation_mask] += mutations[mutation_mask]
-    
-    return mutated_weights
+    """Apply independent Gaussian mutations to an array."""
+    values = np.asarray(weights)
+    if not 0.0 <= mutation_rate <= 1.0:
+        raise ValueError("mutation_rate must satisfy 0 <= mutation_rate <= 1.")
+    if not np.isfinite(mutation_scale) or mutation_scale < 0.0:
+        raise ValueError("mutation_scale must be non-negative and finite.")
+    generator = rng if rng is not None else np.random.default_rng()
+    mask = generator.random(values.shape) < mutation_rate
+    mutations = generator.normal(0.0, mutation_scale, values.shape)
+    result = values.copy()
+    result[mask] = result[mask] + mutations[mask]
+    return result

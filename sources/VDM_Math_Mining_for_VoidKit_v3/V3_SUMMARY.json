@@ -1,0 +1,30 @@
+{
+  "third_sweep_input_files": 820,
+  "third_sweep_unique_hashes": 631,
+  "exact_duplicate_files_vs_v2": 183,
+  "unique_hashes_not_in_v2": 473,
+  "internal_duplicate_hash_groups": 100,
+  "internal_redundant_copies": 189,
+  "promoted_tier_a": 11,
+  "promoted_tier_b": 10,
+  "support_dependencies_added": 3,
+  "promoted_total_including_support": 24,
+  "category_counts": {
+    "added_tier_a": 11,
+    "added_tier_b": 10,
+    "exact_duplicate_v2": 183,
+    "internal_duplicate": 164,
+    "not_promoted_after_semantic_review": 237,
+    "older_or_reduced_variant": 3,
+    "runtime_persistence_orchestration": 17,
+    "superseded_semantic_duplicate": 9,
+    "support_dependency": 3,
+    "test_build_verification_benchmark": 183
+  },
+  "validation_counts": {
+    "PASS": 21,
+    "BLOCKED_MISSING_HEADER": 2,
+    "SKIP_TOOL_UNAVAILABLE": 1
+  },
+  "v3_total_code_files": 326
+}

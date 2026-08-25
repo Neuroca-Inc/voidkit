@@ -1,87 +1,48 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Curated graph-analysis adapters."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional
 
 import networkx as nx
-from typing import Dict, Any, List
 import numpy as np
 
+
 def calculate_graph_metrics(graph: nx.Graph) -> Dict[str, Any]:
-    """
-    Calculates a set of standard metrics for a given graph.
-
-    Parameters
-    ----------
-    graph : nx.Graph
-        A NetworkX graph object.
-
-    Returns
-    -------
-    Dict[str, Any]
-        A dictionary containing the calculated graph metrics, including:
-        - 'num_nodes': Number of nodes.
-        - 'num_edges': Number of edges.
-        - 'density': The density of the graph.
-        - 'avg_degree': The average degree of the nodes.
-        - 'avg_clustering_coefficient': The average clustering coefficient.
-        - 'avg_shortest_path_length': The average shortest path length (if connected).
-    """
+    """Calculate a normalized set of common graph summary metrics."""
     if not isinstance(graph, nx.Graph):
         raise TypeError("Input must be a NetworkX graph.")
 
-    metrics = {}
-    metrics['num_nodes'] = graph.number_of_nodes()
-    metrics['num_edges'] = graph.number_of_edges()
-    metrics['density'] = nx.density(graph)
-    
-    degrees = [d for n, d in graph.degree()]
-    if degrees:
-        metrics['avg_degree'] = np.mean(degrees)
-    else:
-        metrics['avg_degree'] = 0
+    degrees = [degree for _, degree in graph.degree()]
+    connected = graph.number_of_nodes() > 0 and nx.is_connected(graph.to_undirected())
+    return {
+        "num_nodes": graph.number_of_nodes(),
+        "num_edges": graph.number_of_edges(),
+        "density": nx.density(graph),
+        "avg_degree": float(np.mean(degrees)) if degrees else 0.0,
+        "avg_clustering_coefficient": float(nx.average_clustering(graph)),
+        "avg_shortest_path_length": (
+            float(nx.average_shortest_path_length(graph)) if connected else float("inf")
+        ),
+    }
 
-    metrics['avg_clustering_coefficient'] = nx.average_clustering(graph)
 
-    if nx.is_connected(graph):
-        metrics['avg_shortest_path_length'] = nx.average_shortest_path_length(graph)
-    else:
-        metrics['avg_shortest_path_length'] = float('inf') # Or handle disconnected components separately
-
-    return metrics
-
-def detect_communities(graph: nx.Graph, method: str = 'louvain') -> List[List[Any]]:
-    """
-    Detects communities in a graph using a specified algorithm.
-
-    Parameters
-    ----------
-    graph : nx.Graph
-        A NetworkX graph object.
-    method : str, optional
-        The community detection algorithm to use. Currently, only 'louvain' is supported.
-        Default is 'louvain'.
-
-    Returns
-    -------
-    List[List[Any]]
-        A list of lists, where each inner list contains the nodes of a community.
-    """
+def detect_communities(
+    graph: nx.Graph,
+    method: str = "louvain",
+    *,
+    seed: Optional[int] = None,
+) -> List[List[Any]]:
+    """Detect graph communities with an explicitly named NetworkX algorithm."""
     if not isinstance(graph, nx.Graph):
         raise TypeError("Input must be a NetworkX graph.")
+    if graph.number_of_nodes() == 0:
+        return []
 
-    if method == 'louvain':
-        # Note: The 'louvain' algorithm is in the 'community' package, which is a separate dependency.
-        # For simplicity, we will use the greedy modularity maximization from NetworkX,
-        # which is similar in spirit.
-        try:
-            from networkx.algorithms.community import greedy_modularity_communities
-            communities = list(greedy_modularity_communities(graph))
-            return [list(c) for c in communities]
-        except ImportError:
-            raise ImportError("The 'louvain' method requires the 'python-louvain' or 'community' package, or use networkx's greedy_modularity_communities.")
+    if method == "louvain":
+        communities = nx.community.louvain_communities(graph, seed=seed)
+    elif method in {"greedy", "greedy_modularity"}:
+        communities = nx.community.greedy_modularity_communities(graph)
     else:
-        raise ValueError(f"Method '{method}' is not supported. Currently, only 'louvain' is available.")
+        raise ValueError("method must be 'louvain', 'greedy', or 'greedy_modularity'.")
+    return [list(community) for community in communities]

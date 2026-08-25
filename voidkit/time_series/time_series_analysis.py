@@ -1,88 +1,56 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Small, normalized time-series adapters."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Tuple
 
 import numpy as np
 from scipy.fft import fft, fftfreq
-from typing import Tuple
 
-def calculate_fft(
-    signal: np.ndarray, 
-    dt: float = 1.0
-) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Calculates the Fast Fourier Transform (FFT) of a signal.
 
-    Parameters
-    ----------
-    signal : np.ndarray
-        A 1D numpy array representing the time series signal.
-    dt : float, optional
-        The time step between samples, by default 1.0.
+def calculate_fft(signal: np.ndarray, dt: float = 1.0) -> Tuple[np.ndarray, np.ndarray]:
+    """Return the non-negative-frequency half of the FFT of a real 1-D signal."""
+    values = np.asarray(signal)
+    if values.ndim != 1 or values.size == 0:
+        raise ValueError("signal must be a non-empty one-dimensional array.")
+    if not np.isfinite(dt) or dt <= 0.0:
+        raise ValueError("dt must be a positive finite value.")
+    n = values.size
+    yf = fft(values)
+    xf = fftfreq(n, dt)[: n // 2]
+    return xf, yf[: n // 2]
 
-    Returns
-    -------
-    Tuple[np.ndarray, np.ndarray]
-        A tuple containing:
-        - The frequencies for the FFT.
-        - The complex-valued FFT of the signal.
-    """
-    n = len(signal)
-    yf = fft(signal)
-    xf = fftfreq(n, dt)[:n//2]
-    return xf, yf[0:n//2]
 
 def calculate_autocorrelation(signal: np.ndarray) -> np.ndarray:
+    """Return normalized non-negative-lag autocorrelation.
+
+    A constant signal has zero centered variance, so its centered normalized
+    autocorrelation is returned as zeros rather than NaNs.
     """
-    Calculates the autocorrelation of a signal.
+    values = np.asarray(signal, dtype=float)
+    if values.ndim != 1 or values.size == 0:
+        raise ValueError("signal must be a non-empty one-dimensional array.")
+    centered = values - np.mean(values)
+    variance = float(np.var(values))
+    if variance == 0.0:
+        return np.zeros(values.size, dtype=float)
+    autocorr = np.correlate(centered, centered, mode="full")
+    return autocorr[autocorr.size // 2 :] / (values.size * variance)
 
-    Parameters
-    ----------
-    signal : np.ndarray
-        A 1D numpy array representing the time series signal.
 
-    Returns
-    -------
-    np.ndarray
-        The autocorrelation of the signal.
-    """
-    mean_subtracted = signal - np.mean(signal)
-    autocorr = np.correlate(mean_subtracted, mean_subtracted, mode='full')
-    return autocorr[autocorr.size//2:] / (len(signal) * np.var(signal))
-
-def calculate_cross_correlation(
-    signal1: np.ndarray, 
-    signal2: np.ndarray
-) -> np.ndarray:
-    """
-    Calculates the cross-correlation between two signals.
-
-    Parameters
-    ----------
-    signal1 : np.ndarray
-        The first 1D numpy array.
-    signal2 : np.ndarray
-        The second 1D numpy array.
-
-    Returns
-    -------
-    np.ndarray
-        The cross-correlation of the two signals.
-    """
-    if len(signal1) != len(signal2):
+def calculate_cross_correlation(signal1: np.ndarray, signal2: np.ndarray) -> np.ndarray:
+    """Return normalized non-negative-lag cross-correlation for equal-length signals."""
+    first = np.asarray(signal1, dtype=float)
+    second = np.asarray(signal2, dtype=float)
+    if first.ndim != 1 or second.ndim != 1 or first.size == 0 or second.size == 0:
+        raise ValueError("Signals must be non-empty one-dimensional arrays.")
+    if first.size != second.size:
         raise ValueError("Signals must have the same length.")
-    
-    mean1 = np.mean(signal1)
-    mean2 = np.mean(signal2)
-    std1 = np.std(signal1)
-    std2 = np.std(signal2)
 
-    if std1 == 0 or std2 == 0:
-        return np.zeros(len(signal1))
+    mean1, mean2 = np.mean(first), np.mean(second)
+    std1, std2 = float(np.std(first)), float(np.std(second))
+    if std1 == 0.0 or std2 == 0.0:
+        return np.zeros(first.size, dtype=float)
 
-    cross_corr = np.correlate(signal1 - mean1, signal2 - mean2, mode='full')
-    return cross_corr[cross_corr.size//2:] / (len(signal1) * std1 * std2)
+    cross_corr = np.correlate(first - mean1, second - mean2, mode="full")
+    return cross_corr[cross_corr.size // 2 :] / (first.size * std1 * std2)

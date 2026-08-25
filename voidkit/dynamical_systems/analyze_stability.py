@@ -1,53 +1,52 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Local linear stability classification for continuous-time systems."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Any, Dict
 
 import numpy as np
-from typing import Dict, Any
 
-def analyze_stability(
-    jacobian: np.ndarray
-) -> Dict[str, Any]:
+
+def analyze_stability(jacobian: np.ndarray, tol: float = 1e-10) -> Dict[str, Any]:
+    """Classify a fixed point from Jacobian eigenvalues.
+
+    Hyperbolic equilibria are classified from eigenvalue real parts. If one or
+    more eigenvalues have real part within ``tol`` of zero, linearization alone
+    is not sufficient to establish nonlinear stability and the result is marked
+    nonhyperbolic/inconclusive unless a positive-real-part mode already proves
+    instability.
     """
-    Analyzes the stability of a fixed point by examining the eigenvalues of the Jacobian.
+    matrix = np.asarray(jacobian, dtype=float)
+    if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
+        raise ValueError("jacobian must be a square matrix.")
+    if matrix.size == 0 or not np.all(np.isfinite(matrix)):
+        raise ValueError("jacobian must be non-empty and finite.")
+    if tol < 0.0:
+        raise ValueError("tol must be non-negative.")
 
-    Parameters
-    ----------
-    jacobian : np.ndarray
-        The Jacobian matrix at the fixed point.
-
-    Returns
-    -------
-    Dict[str, Any]
-        A dictionary containing the stability analysis, including:
-        - 'eigenvalues': The eigenvalues of the Jacobian.
-        - 'stability_type': The type of stability (e.g., stable node, saddle point).
-    """
-    eigenvalues = np.linalg.eigvals(jacobian)
-    
+    eigenvalues = np.linalg.eigvals(matrix)
     real_parts = np.real(eigenvalues)
     imag_parts = np.imag(eigenvalues)
 
-    if np.all(real_parts < 0):
-        if np.all(imag_parts == 0):
-            stability_type = "Stable Node"
-        else:
-            stability_type = "Stable Spiral"
-    elif np.all(real_parts > 0):
-        if np.all(imag_parts == 0):
-            stability_type = "Unstable Node"
-        else:
-            stability_type = "Unstable Spiral"
-    elif np.any(real_parts > 0) and np.any(real_parts < 0):
+    has_positive = np.any(real_parts > tol)
+    has_negative = np.any(real_parts < -tol)
+    has_neutral = np.any(np.abs(real_parts) <= tol)
+    has_complex = np.any(np.abs(imag_parts) > tol)
+
+    if has_positive and has_negative:
         stability_type = "Saddle Point"
+    elif has_positive:
+        if has_neutral:
+            stability_type = "Unstable (Nonhyperbolic)"
+        else:
+            stability_type = "Unstable Spiral" if has_complex else "Unstable Node"
+    elif has_neutral:
+        stability_type = "Nonhyperbolic (Linearization Inconclusive)"
     else:
-        stability_type = "Center (Marginally Stable)"
+        stability_type = "Stable Spiral" if has_complex else "Stable Node"
 
     return {
-        'eigenvalues': eigenvalues,
-        'stability_type': stability_type
+        "eigenvalues": eigenvalues,
+        "stability_type": stability_type,
+        "hyperbolic": not has_neutral,
     }

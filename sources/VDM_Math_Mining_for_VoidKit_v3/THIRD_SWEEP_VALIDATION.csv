@@ -1,0 +1,33 @@
+file,check,status,detail
+third_sweep_candidates/tier_a/python/intervals.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/permutation.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/words.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/run_head_to_head.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/orthad_closed_form.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/candidate_local_coordinate.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/jacobian_sheet_custody.py,python_compile,PASS,
+third_sweep_candidates/tier_a/python/deep_wide_sweep.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/certifier.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/20260619T190328_orthad_lift_measurement.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/affine_binary_locality_probe.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/first_b_germ_sector.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/first_b_unimodular_orthad.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/native_transition_group_probe.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/xi_endogenous_floor_burden.py,python_compile,PASS,
+third_sweep_candidates/tier_b/python/invariants.py,python_compile,PASS,
+third_sweep_support/fibonacci.py,python_compile,PASS,
+third_sweep_support/models.py,python_compile,PASS,
+third_sweep_support/readouts.py,python_compile,PASS,
+third_sweep_candidates/tier_a/c/qbl_orthad_query.c,gcc -fsyntax-only,BLOCKED_MISSING_HEADER,"/mnt/data/VDM_Math_Mining_for_VoidKit_v3/third_sweep_candidates/tier_a/c/qbl_orthad_query.c:15:10: fatal error: qbl_abi.h: No such file or directory
+   15 | #include ""qbl_abi.h""
+      |          ^~~~~~~~~~~
+compilation terminated.
+"
+third_sweep_candidates/tier_b/c/xigraph_engine.c,gcc -fsyntax-only,BLOCKED_MISSING_HEADER,"/mnt/data/VDM_Math_Mining_for_VoidKit_v3/third_sweep_candidates/tier_b/c/xigraph_engine.c:6:10: fatal error: ../../include/pcvdm/xigraph.h: No such file or directory
+    6 | #include ""../../include/pcvdm/xigraph.h""
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+"
+third_sweep_candidates/tier_a/asm/farey_balanced_anchor_kernel.S,gcc -c,PASS,
+third_sweep_candidates/tier_b/asm/xi_step_endogenous_floor.S,gcc -c,PASS,
+third_sweep_candidates/tier_a/rust/lib (55th copy).rs,rustc --crate-type lib,SKIP_TOOL_UNAVAILABLE,rustc is not installed in the validation environment; file retained by static content inspection.

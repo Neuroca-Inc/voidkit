@@ -1,71 +1,60 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Temporal-kernel spectral clustering."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
+
+from typing import Optional, Tuple
 
 import numpy as np
-import networkx as nx
+from scipy.sparse.csgraph import laplacian
 from sklearn.cluster import SpectralClustering
-from typing import Tuple
+
 
 def spectral_clustering_with_temporal_kernel(
     spike_rates: np.ndarray,
     spike_times: np.ndarray,
     sigma: float = 1.0,
     tau: float = 1.0,
-    max_clusters: int = 10
+    max_clusters: int = 10,
+    random_state: Optional[int] = None,
 ) -> Tuple[int, np.ndarray]:
+    """Cluster observations using a joint rate/time affinity kernel.
+
+    ``W_ij = exp(-(rate_i-rate_j)^2/sigma^2 - |time_i-time_j|/tau)``.
+    The cluster count is selected from the eigengap of the normalized graph
+    Laplacian, rather than from eigenvalue gaps of the raw affinity matrix.
     """
-    Performs spectral clustering with a temporal kernel to find the optimal
-    number of clusters.
+    rates = np.asarray(spike_rates, dtype=float)
+    times = np.asarray(spike_times, dtype=float)
+    if rates.ndim != 1 or times.ndim != 1 or rates.size != times.size or rates.size == 0:
+        raise ValueError("spike_rates and spike_times must be equal-length non-empty 1-D arrays.")
+    if not np.all(np.isfinite(rates)) or not np.all(np.isfinite(times)):
+        raise ValueError("spike_rates and spike_times must be finite.")
+    if not np.isfinite(sigma) or sigma <= 0.0 or not np.isfinite(tau) or tau <= 0.0:
+        raise ValueError("sigma and tau must be positive finite values.")
+    if max_clusters < 1:
+        raise ValueError("max_clusters must be at least 1.")
 
-    The affinity matrix W is defined as:
-    W_ij = exp(-||rate_i - rate_j||² / σ² - |Δt_ij| / τ)
+    n_items = rates.size
+    if n_items == 1:
+        return 1, np.array([0], dtype=int)
 
-    Parameters
-    ----------
-    spike_rates : np.ndarray
-        A 1D numpy array of spike rates for each neuron.
-    spike_times : np.ndarray
-        A 1D numpy array of the last spike time for each neuron.
-    sigma : float, optional
-        The width of the Gaussian kernel for the rates, by default 1.0.
-    tau : float, optional
-        The time constant for the temporal kernel, by default 1.0.
-    max_clusters : int, optional
-        The maximum number of clusters to test for, by default 10.
+    rate_diff = rates[:, None] - rates[None, :]
+    time_diff = times[:, None] - times[None, :]
+    affinity = np.exp(-(rate_diff**2) / (sigma**2) - np.abs(time_diff) / tau)
 
-    Returns
-    -------
-    Tuple[int, np.ndarray]
-        A tuple containing:
-        - The optimal number of clusters found.
-        - The labels for each neuron.
-    """
-    n_neurons = len(spike_rates)
-    
-    # Calculate rate differences
-    rate_diff = spike_rates[:, np.newaxis] - spike_rates[np.newaxis, :]
-    
-    # Calculate time differences
-    time_diff = spike_times[:, np.newaxis] - spike_times[np.newaxis, :]
-    
-    # Calculate affinity matrix
-    affinity_matrix = np.exp(-rate_diff**2 / sigma**2 - np.abs(time_diff) / tau)
-    
-    # Find optimal k using the eigengap heuristic
-    eigenvalues, _ = np.linalg.eigh(affinity_matrix)
-    eigengaps = np.diff(eigenvalues)
-    optimal_k = np.argmax(eigengaps) + 1
-    
-    if optimal_k > max_clusters:
-        optimal_k = max_clusters
-        
-    # Perform spectral clustering with the optimal k
-    sc = SpectralClustering(n_clusters=optimal_k, affinity='precomputed', assign_labels='kmeans')
-    labels = sc.fit_predict(affinity_matrix)
-    
-    return optimal_k, labels
+    normalized_laplacian = laplacian(affinity, normed=True)
+    eigenvalues = np.linalg.eigvalsh(normalized_laplacian)
+    max_candidate = min(max_clusters, n_items - 1)
+    gaps = np.diff(eigenvalues[: max_candidate + 1])
+    optimal_k = int(np.argmax(gaps) + 1)
+
+    if optimal_k == 1:
+        return 1, np.zeros(n_items, dtype=int)
+
+    model = SpectralClustering(
+        n_clusters=optimal_k,
+        affinity="precomputed",
+        assign_labels="kmeans",
+        random_state=random_state,
+    )
+    return optimal_k, model.fit_predict(affinity)

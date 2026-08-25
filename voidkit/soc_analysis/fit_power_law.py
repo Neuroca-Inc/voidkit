@@ -1,46 +1,43 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Power-law diagnostics."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
-import numpy as np
 from typing import Tuple
 
+import numpy as np
+
+
 def fit_power_law(data: np.ndarray) -> Tuple[float, float]:
+    """Estimate a continuous power-law exponent and a CCDF fit diagnostic.
+
+    Returns ``(alpha, r_squared)`` for ``p(x) proportional to x**(-alpha)`` using
+    the continuous maximum-likelihood estimator with ``xmin = min(data)``. The
+    reported R² compares the empirical log-CCDF to the corresponding fitted
+    asymptotic CCDF and is a diagnostic, not a goodness-of-fit hypothesis test.
     """
-    Fits a power-law distribution to data using a linear fit on a log-log plot.
+    values = np.asarray(data, dtype=float)
+    if values.ndim != 1 or values.size < 3:
+        raise ValueError("data must be a one-dimensional array with at least 3 samples.")
+    if not np.all(np.isfinite(values)) or np.any(values <= 0.0):
+        raise ValueError("Power-law samples must be finite and strictly positive.")
 
-    Parameters
-    ----------
-    data : np.ndarray
-        A 1D numpy array of the data to be fitted (e.g., avalanche sizes).
+    xmin = float(np.min(values))
+    log_ratios = np.log(values / xmin)
+    denominator = float(np.sum(log_ratios))
+    if denominator <= 0.0:
+        raise ValueError("Power-law fitting requires at least two distinct positive values.")
 
-    Returns
-    -------
-    Tuple[float, float]
-        A tuple containing the exponent of the power law and the R-squared value
-        of the fit.
-    """
-    # Create a histogram of the data
-    counts, bin_edges = np.histogram(data, bins=np.logspace(np.log10(min(data)), np.log10(max(data)), len(data)//10))
-    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+    alpha = 1.0 + values.size / denominator
 
-    # Filter out zero counts to avoid log(0)
-    non_zero = counts > 0
-    log_x = np.log10(bin_centers[non_zero])
-    log_y = np.log10(counts[non_zero])
+    unique = np.unique(values)
+    if unique.size < 2:
+        return float(alpha), 1.0
+    empirical_ccdf = np.array([np.mean(values >= x) for x in unique], dtype=float)
+    predicted_ccdf = (unique / xmin) ** (-(alpha - 1.0))
 
-    # Fit a line to the log-log data
-    coeffs, residuals, _, _, _ = np.polyfit(log_x, log_y, 1, full=True)
-    
-    exponent = coeffs[0]
-    
-    # Calculate R-squared
-    ss_res = residuals[0]
-    ss_tot = np.sum((log_y - np.mean(log_y))**2)
-    r_squared = 1 - (ss_res / ss_tot)
-    
-    return exponent, r_squared
+    observed = np.log(empirical_ccdf)
+    predicted = np.log(predicted_ccdf)
+    ss_res = float(np.sum((observed - predicted) ** 2))
+    ss_tot = float(np.sum((observed - np.mean(observed)) ** 2))
+    r_squared = 1.0 if ss_tot == 0.0 else 1.0 - ss_res / ss_tot
+    return float(alpha), float(r_squared)

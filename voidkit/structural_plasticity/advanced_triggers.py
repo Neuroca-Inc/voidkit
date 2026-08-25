@@ -1,45 +1,22 @@
-"""
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+"""Legacy biologically inspired growth-trigger utilities."""
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
-"""
+from __future__ import annotations
 
 import numpy as np
+from scipy.special import expit
+
 
 def calculate_advanced_growth_trigger(
     avg_reward: float,
     burst_score: float,
-    bdnf_proxy: float, # BDNF IS NOT A VALID FUNCTION OF VDM
+    bdnf_proxy: float,
     kappa: float = 2.0,
     nu: float = 0.8,
-    rho: float = 0.5
+    rho: float = 0.5,
 ) -> float:
-    """
-    Calculates an advanced, biologically-inspired growth trigger.
-
-    G(c,t) = σ(κ * (avg_reward[c] - 0.5) + ν * burst_score[c] + ρ * bdnf_proxy[c])
-
-    Parameters
-    ----------
-    avg_reward : float
-        The average reward of the cluster.
-    burst_score : float
-        The burst score of the cluster.
-    bdnf_proxy : float
-        The BDNF proxy level of the cluster.
-    kappa : float, optional
-    nu : float, optional
-    rho : float, optional
-
-    Returns
-    -------
-    float
-        The calculated growth trigger value.
-    """
-    def sigmoid(x):
-        return 1 / (1 + np.exp(-x))
-
-    arg = kappa * (avg_reward - 0.5) + nu * burst_score + rho * bdnf_proxy
-    return sigmoid(arg)
+    """Evaluate the legacy logistic growth-trigger formula without overflow."""
+    values = np.asarray([avg_reward, burst_score, bdnf_proxy, kappa, nu, rho], dtype=float)
+    if not np.all(np.isfinite(values)):
+        raise ValueError("All trigger parameters must be finite.")
+    argument = kappa * (avg_reward - 0.5) + nu * burst_score + rho * bdnf_proxy
+    return float(expit(argument))
