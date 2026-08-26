@@ -53,20 +53,6 @@ fn voidkit_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
         m
     )?)?;
 
-    // Void dynamics equations
-    m.add_function(wrap_pyfunction!(
-        vdm::void_equations::delta_re_vgsp,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        vdm::void_equations::delta_gdsp,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        vdm::void_equations::vdm_step,
-        m
-    )?)?;
-
     // SIE formulas
     m.add_function(wrap_pyfunction!(
         vdm::sie_formulas::calculate_td_error,

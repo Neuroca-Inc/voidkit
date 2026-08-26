@@ -30,10 +30,13 @@ def test_void_debt_modulation_module_is_removed():
         importlib.import_module("voidkit.vdm.void_debt_modulation")
 
 
-def test_void_equations_have_no_domain_modulation_parameter():
+def test_legacy_void_equations_are_quarantined():
     import inspect
 
-    equations = importlib.import_module("voidkit.vdm.void_equations")
+    with pytest.raises(ModuleNotFoundError):
+        importlib.import_module("voidkit.vdm.void_equations")
+
+    equations = importlib.import_module("voidkit.vdm.easter_eggs.legacy_void_equations")
     for name in ("delta_re_vgsp", "delta_gdsp", "universal_void_dynamics"):
         assert "domain_modulation" not in inspect.signature(getattr(equations, name)).parameters
 
