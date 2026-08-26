@@ -5,7 +5,6 @@ Thermodynamics module - free energy calculations.
 */
 
 use numpy::{PyArray1, PyReadonlyArray1, PyReadonlyArray2};
-use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 /// Calculates the free energy of the system.
@@ -91,6 +90,7 @@ pub fn calculate_free_energy(
 ///     weights, spike_rates, target_rate, lambda_reg, eta, delta_t, tau
 /// )
 /// ```
+#[allow(clippy::too_many_arguments)]
 #[pyfunction]
 pub fn minimize_free_energy_step<'py>(
     py: Python<'py>,
@@ -104,6 +104,11 @@ pub fn minimize_free_energy_step<'py>(
 ) -> PyResult<Bound<'py, PyArray1<f64>>> {
     let w = weights.as_array();
     let _rates = spike_rates.as_array();
+    // The current free-energy gradient is taken with respect to weights while
+    // treating spike rates and target rate as independent state inputs. Keep
+    // the public API aligned with the Python implementation without hiding the
+    // fact that target_rate does not enter ∂F/∂w for this functional.
+    let _ = target_rate;
 
     let shape = w.shape();
     let (n_rows, n_cols) = (shape[0], shape[1]);
@@ -131,7 +136,6 @@ pub fn minimize_free_energy_step<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]

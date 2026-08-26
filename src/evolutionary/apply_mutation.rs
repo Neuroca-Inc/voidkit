@@ -1,17 +1,14 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Mutation Operator for Evolutionary Algorithms
 //!
 //! Applies random mutations to weights/parameters.
 
-use ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArray, PyReadonlyArray};
 use pyo3::prelude::*;
 use rand::thread_rng;
@@ -27,6 +24,7 @@ use rand_distr::{Distribution, Normal};
 ///
 /// # Returns
 /// Mutated weights array
+#[allow(clippy::manual_range_contains)]
 #[pyfunction]
 #[pyo3(signature = (weights, mutation_rate = 0.01, mutation_scale = 0.1))]
 pub fn apply_mutation<'py>(

@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voidkit"
+dynamic = ["version"]
+description = "Research-derived mathematics and scientific computing tools from Neuroca"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Justin K. Lietz"},
+]
+maintainers = [
+  {name = "Neuroca, Inc."},
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+  "numpy>=1.20",
+  "scipy>=1.7",
+]
+
+[project.optional-dependencies]
+symbolic = ["sympy>=1.10"]
+graphs = ["networkx>=2.8"]
+clustering = ["networkx>=2.8", "scikit-learn>=1.0"]
+tda = ["ripser>=0.6"]
+optimization = ["scikit-optimize>=0.9"]
+statistics = ["pandas>=1.5", "statsmodels>=0.13"]
+plotting = ["matplotlib>=3.5"]
+vdm = ["torch>=2.0"]
+test = [
+  "pytest>=7",
+  "networkx>=2.8",
+  "scikit-learn>=1.0",
+  "statsmodels>=0.13",
+  "sympy>=1.10",
+]
+full = [
+  "matplotlib>=3.5",
+  "networkx>=2.8",
+  "pandas>=1.5",
+  "ripser>=0.6",
+  "scikit-learn>=1.0",
+  "scikit-optimize>=0.9",
+  "statsmodels>=0.13",
+  "sympy>=1.10",
+  "torch>=2.0",
+]
+
+[project.scripts]
+voidkit-stats = "voidkit.advanced_math.calculate_descriptive_stats:main"
+voidkit-diff = "voidkit.advanced_math.symbolic_differentiation:main"
+
+[project.urls]
+Homepage = "https://github.com/Neuroca-Inc/voidkit"
+Repository = "https://github.com/Neuroca-Inc/voidkit"
+Issues = "https://github.com/Neuroca-Inc/voidkit/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "voidkit._version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["voidkit*"]
+exclude = ["sources*", "tests*", "dev-reports*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["sources", ".git", ".venv", "venv", "build", "dist"]
+addopts = "--strict-markers"
+pythonpath = ["."]
+
+[tool.setuptools.package-data]
+"voidkit.provenance" = ["*.json"]

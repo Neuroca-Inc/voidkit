@@ -1,17 +1,14 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Recombination/Crossover Operator for Evolutionary Algorithms
 //!
 //! Performs crossover between two sets of weights.
 
-use ndarray::ArrayD;
 use numpy::{IntoPyArray, PyArray, PyReadonlyArray};
 use pyo3::prelude::*;
 use rand::thread_rng;
@@ -26,6 +23,7 @@ use rand::Rng;
 ///
 /// # Returns
 /// New weights after recombination
+#[allow(clippy::manual_range_contains)]
 #[pyfunction]
 #[pyo3(signature = (weights1, weights2, recombination_prob = 0.5))]
 pub fn apply_recombination<'py>(

@@ -140,14 +140,12 @@ pub fn calculate_cross_correlation<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use approx::assert_relative_eq;
 
     #[test]
     fn test_autocorr_constant() {
         // Autocorrelation of constant signal should be all zeros
-        let signal = vec![5.0; 10];
-        let mean = 5.0;
+        let _signal = [5.0; 10];
+        let _mean = 5.0;
         let variance = 0.0;
 
         assert_eq!(variance, 0.0);
@@ -156,7 +154,7 @@ mod tests {
     #[test]
     fn test_cross_corr_identical() {
         // Cross-correlation of identical signals should equal autocorrelation
-        let signal = vec![1.0, 2.0, 3.0, 2.0, 1.0];
+        let signal = [1.0, 2.0, 3.0, 2.0, 1.0];
         let n = signal.len();
         let mean: f64 = signal.iter().sum::<f64>() / n as f64;
         let std: f64 = (signal.iter().map(|&x| (x - mean).powi(2)).sum::<f64>() / n as f64).sqrt();

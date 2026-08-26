@@ -7,6 +7,8 @@ Stochastic simulation module - Gillespie algorithm.
 use numpy::{PyArray1, PyArray2, PyReadonlyArray1, PyReadonlyArray2};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+
+type GillespiePyOutput<'py> = (Bound<'py, PyArray1<f64>>, Bound<'py, PyArray2<f64>>);
 use rand::Rng;
 
 /// Performs a Gillespie simulation (Stochastic Simulation Algorithm).
@@ -46,7 +48,7 @@ pub fn gillespie_simulation<'py>(
     propensity_func: PyObject,
     stoichiometry: PyReadonlyArray2<'py, f64>,
     t_max: f64,
-) -> PyResult<(Bound<'py, PyArray1<f64>>, Bound<'py, PyArray2<f64>>)> {
+) -> PyResult<GillespiePyOutput<'py>> {
     let init_state = initial_state.as_array();
     let stoich = stoichiometry.as_array();
 
@@ -142,20 +144,19 @@ pub fn gillespie_simulation<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     #[test]
     fn test_gillespie_basic() {
         // Basic test that algorithm structure is correct
-        let initial = vec![10.0];
-        let stoich = vec![vec![1.0], vec![-1.0]];
+        let initial = [10.0];
+        let _stoich = [[1.0], [-1.0]];
 
         // Simple propensity calculation
         let birth_rate = 0.5;
         let death_rate = 0.3;
 
-        let mut state = initial[0];
-        let propensities = vec![birth_rate * state, death_rate * state];
+        let state = initial[0];
+        let propensities = [birth_rate * state, death_rate * state];
         let total: f64 = propensities.iter().sum();
 
         assert!(total > 0.0);

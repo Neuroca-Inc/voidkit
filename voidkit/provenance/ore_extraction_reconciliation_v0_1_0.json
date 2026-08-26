@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "source_receipt": "sources/ore_extraction_v0_1_0/SOURCES.json",
+  "records": [
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/reaction_diffusion/reaction_exact.py",
+      "sha256": "0c8d93c2ee24d0884b855651b8bceb557c46b8d2d1accaae4187c866e3a4483b",
+      "size_bytes": 4392,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__reaction_diffusion__reaction_exact.py",
+      "extracted_modules": [
+        "voidkit.dynamics.logistic"
+      ],
+      "extraction_mode": "behavior-preserving copy + aliases",
+      "notes": "Only public aliases added; formulas/body unchanged.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.dynamics.logistic"
+      ],
+      "reconciliation": "already restored from later validated extraction; source hash is identical"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/reaction_diffusion/flux_core.py",
+      "sha256": "5b002b5823fce5aba0a80d892908a5f777fcee89f65bd82d8ab7b6d1a6fd581d",
+      "size_bytes": 9727,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__reaction_diffusion__flux_core.py",
+      "extracted_modules": [
+        "voidkit.pde.diffusion"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Standalone conservative diffusion core.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.pde.diffusion"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/reaction_diffusion/discrete_gradient.py",
+      "sha256": "6a4ef9961adfc1faef29499143f27af6b120957c339b460eb885a33a14a72d3b",
+      "size_bytes": 6889,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__reaction_diffusion__discrete_gradient.py",
+      "extracted_modules": [
+        "voidkit.pde.reaction_diffusion"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "AVF/Picard implementation retained; practical Lyapunov claim not strengthened.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.pde.reaction_diffusion"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/reaction_diffusion/census_clocks.py",
+      "sha256": "2a28b9839024d520ccb36d1cde5197cd4b53f2573c1df0c4accb1c913332baf7",
+      "size_bytes": 9551,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__reaction_diffusion__census_clocks.py",
+      "extracted_modules": [
+        "voidkit.pde.asynchronous"
+      ],
+      "extraction_mode": "import-path normalization",
+      "notes": "Equations and update bodies unchanged; only package imports normalized.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.pde.asynchronous"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/common/vdm/stats.py",
+      "sha256": "9b0fddda41b53cd2a818331daed23662baadf75267f32e6848f896a357dd1d53",
+      "size_bytes": 10074,
+      "snapshot_file": "provenance/sources/Derivation__code__common__vdm__stats.py",
+      "extracted_modules": [
+        "voidkit.stats.correlated"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "VDM namespace removed by package placement only.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.stats.correlated"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/memory_steering/memory_steering.py",
+      "sha256": "bdf55c240e533659345ef56a6910bc439b2bb8592f976a951d970b9c46e8cb32",
+      "size_bytes": 17032,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__memory_steering__memory_steering.py",
+      "extracted_modules": [
+        "voidkit.graph.memory"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Graph memory/routing equations retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.graph.memory"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/metriplectic/kg_ops.py",
+      "sha256": "f81dbabbf8e34ff44c434b148f000668731eb892693f2808c969144e7b9f21ef",
+      "size_bytes": 1733,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__metriplectic__kg_ops.py",
+      "extracted_modules": [
+        "voidkit.wave.kg"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Spectral KG operators retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.wave.klein_gordon"
+      ],
+      "reconciliation": "unique kg_energy capability merged into existing Klein-Gordon owner; duplicate spectral/Verlet implementations not reintroduced"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/metriplectic/j_step.py",
+      "sha256": "42f029e50b8a6da1946e6f30a8f17ee57dfcecba8c499e7481efb5b24cd96b22",
+      "size_bytes": 1889,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__metriplectic__j_step.py",
+      "extracted_modules": [
+        "voidkit.wave.advection"
+      ],
+      "extraction_mode": "math-core extraction + alias",
+      "notes": "Removed repository sys.path mutation only.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.wave.advection"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/common/causality/event_dag.py",
+      "sha256": "1bd3b465e31aba1a9c9d4c09081e633f8be954fd7ae24a1d963be9f9a69473f5",
+      "size_bytes": 7474,
+      "snapshot_file": "provenance/sources/Derivation__code__common__causality__event_dag.py",
+      "extracted_modules": [
+        "voidkit.graph.causality"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Pure-Python DAG utilities.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.graph.causality"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/common/instrument_helpers/topo_rdm_timeseries.py",
+      "sha256": "92cdb5ff1fce89a5f213c8b3148e9d60f5e8b0ba267493bb56b3d1aa205a590f",
+      "size_bytes": 12828,
+      "snapshot_file": "provenance/sources/Derivation__code__common__instrument_helpers__topo_rdm_timeseries.py",
+      "extracted_modules": [
+        "voidkit.signal.ridges"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "GWPy loader remains optional/lazy; STFT ridge core unchanged.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.signal.ridges"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/tachyonic_condensation/cylinder_modes.py",
+      "sha256": "ea05c1291e0f925da4594c226c3f0e801656991765a513097e09c762cb031e9b",
+      "size_bytes": 22526,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__tachyonic_condensation__cylinder_modes.py",
+      "extracted_modules": [
+        "voidkit.special.cylindrical"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Physical/secular assumptions intentionally not generalized.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.special.cylindrical"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/axioms/verify_discrete_EL.py",
+      "sha256": "be442e681b161bf3fae8fdf8c2351b72df0cbb2e9ed297aaa99330f67ead0419",
+      "size_bytes": 3892,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__axioms__verify_discrete_EL.py",
+      "extracted_modules": [
+        "voidkit.variational.discrete_el"
+      ],
+      "extraction_mode": "behavior-preserving copy",
+      "notes": "Double-counted periodic neighbor energy convention retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.variational.discrete_el"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/common/instrument_helpers/generic_helpers.py",
+      "sha256": "42e3bbbbd2fc7b4e9c9d8a6a01f515da888fcc73606b768f79987e7369569dda",
+      "size_bytes": 13806,
+      "snapshot_file": "provenance/sources/Derivation__code__common__instrument_helpers__generic_helpers.py",
+      "extracted_modules": [
+        "voidkit.structure.generic"
+      ],
+      "extraction_mode": "math-core extraction",
+      "notes": "Artifact I/O omitted. Source Jacobi routine explicitly exposed as a proxy alias; no stronger claim.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.structure.generic"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/common/instrument_helpers/lit_tools.py",
+      "sha256": "d104555482a86dffa6f5b1c4d9e935822eea315d714088f66fd7c9e6045981cf",
+      "size_bytes": 14149,
+      "snapshot_file": "provenance/sources/Derivation__code__common__instrument_helpers__lit_tools.py",
+      "extracted_modules": [
+        "voidkit.thermo.lit"
+      ],
+      "extraction_mode": "math-core extraction",
+      "notes": "Repository artifact writers omitted; calculations retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.thermodynamics.lit"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/cosmology/black_holes/topo_rdm/run_topo_rdm_v1.py",
+      "sha256": "c286e0023e7f1b3365cd1d11bc6505771a21c25fec92858c0b62f75dc475a6c1",
+      "size_bytes": 40189,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__cosmology__black_holes__topo_rdm__run_topo_rdm_v1.py",
+      "extracted_modules": [
+        "voidkit.topology.vr_graph"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Only low-level graph-filtration/null/FDR primitives extracted; black-hole/DSI runner excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.topology.vr_graph"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "vdm_scale_free_1k_analysis/scripts/run_scale_free_analysis_1k.py",
+      "sha256": "28de4085e51a606e5c06d5cdf9685d7307e0b4d4cbd1cc8751c48b09d78dc71d",
+      "size_bytes": 10579,
+      "snapshot_file": "provenance/sources/vdm_scale_free_1k_analysis__scripts__run_scale_free_analysis_1k.py",
+      "extracted_modules": [
+        "voidkit.stats.heavytail"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Analysis runner, plotting, VDM data loading excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.stats.heavytail"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "vdm_biological_neural_network/scripts/run_four_proofs.py",
+      "sha256": "512819b3ae2aee2c82b36fc6b5c52bb8e49e5e2708fd5b0062bbdd4819e0f49a",
+      "size_bytes": 15758,
+      "snapshot_file": "provenance/sources/vdm_biological_neural_network__scripts__run_four_proofs.py",
+      "extracted_modules": [
+        "voidkit.stats.basic",
+        "voidkit.recurrence.rqa"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Domain runner excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.stats.basic",
+        "voidkit.recurrence.rqa"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/analyze_scalar_struct_from_logs.py",
+      "sha256": "5a2d9a4d61309854c33c1abab4a0b71c33c367f53252469624980b9238b1f4c2",
+      "size_bytes": 20644,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__analyze_scalar_struct_from_logs.py",
+      "extracted_modules": [
+        "voidkit.stats.basic",
+        "voidkit.timeseries.events"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "VDM log parsing/model-specific analysis excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.stats.basic",
+        "voidkit.time_series.events"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/vdm_analysis_dashboard.py",
+      "sha256": "1485d08d42d51f5537014335ec0e78e436d22ea1f1801c756533e36a28a005e6",
+      "size_bytes": 65949,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__vdm_analysis_dashboard.py",
+      "extracted_modules": [
+        "voidkit.information.complexity",
+        "voidkit.signal.spectral"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Plotting/dashboard/VDM parsing excluded. TE units explicitly documented as nats.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.info_theory.complexity",
+        "voidkit.signal.spectral"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/run_all.py",
+      "sha256": "9c2dd93bb5da60dd07281d1b141097ea568d7a7df027e31aadba894ce249a30b",
+      "size_bytes": 27672,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__run_all.py",
+      "extracted_modules": [
+        "voidkit.timeseries.events",
+        "voidkit.information.complexity"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Run orchestration and VDM parsing excluded; TE bit units retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.time_series.events",
+        "voidkit.info_theory.complexity"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/run_node_correspondence_matching.py",
+      "sha256": "10c1cc87298a2e91b2dd3ff76680ff2f4c1d745dd883d612bc7e70798a6e6d98",
+      "size_bytes": 9995,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__run_node_correspondence_matching.py",
+      "extracted_modules": [
+        "voidkit.graph.matching"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Snapshot I/O and VDM feature construction excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.graph.matching"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/rd_conservation/run_rd_conservation.py",
+      "sha256": "4dd2d1f2bd03b78a00e8c0eda408c4ce6727372ee30a853355e6bc1161bb1935",
+      "size_bytes": 39545,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__rd_conservation__run_rd_conservation.py",
+      "extracted_modules": [
+        "voidkit.pde.implicit_rd"
+      ],
+      "extraction_mode": "generic solver extraction",
+      "notes": "Harness/plots/logging/CAS experiments excluded; selected numerical functions retained. `strang_step` import normalized to VoidKit exact reaction.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.pde.implicit_rd"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "VDM_Physics_Derivation.zip",
+      "source_path": "Derivation/code/physics/metriplectic/kg_noether.py",
+      "sha256": "8be6a6987c3cac257aac47cbc5b0c59b4f1682a571cc82f45f5e4ffe6d8fb543",
+      "size_bytes": 11549,
+      "snapshot_file": "provenance/sources/Derivation__code__physics__metriplectic__kg_noether.py",
+      "extracted_modules": [
+        "voidkit.wave.noether"
+      ],
+      "extraction_mode": "math-core extraction",
+      "notes": "Approval/artifact/plotting runner removed; formulas retained.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.wave.noether"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/run_connectome_geometry_projectionmap_analysis.py",
+      "sha256": "c179b0d79ee999514dd7e6af98a67b4d3c2caac6db006c03c1855d06cb25e1cc",
+      "size_bytes": 14655,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__run_connectome_geometry_projectionmap_analysis.py",
+      "extracted_modules": [
+        "voidkit.graph.spectral"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "VDM H5 loading, Louvain dependency, plotting, and report assembly excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.graph.spectral"
+      ],
+      "reconciliation": "restored under prior extraction destination"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/run_consciousness_suite_aura.py",
+      "sha256": "d76ca3d7344705d8d30a344226fde208d01e2c2f81345ec915f8b2e497c305e5",
+      "size_bytes": 20942,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__run_consciousness_suite_aura.py",
+      "extracted_modules": [
+        "voidkit.information.gaussian"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Global-data PCI wrapper and VDM suite orchestration excluded.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.info_theory.gaussian"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    },
+    {
+      "origin_archive": "data_analysis.zip",
+      "source_path": "Aura_VDM/aura_analysis_bundle/scripts/F7_infoflow_scripts/f7_infoflow_higherorder_landscape.py",
+      "sha256": "1020faca00da7a11b876519eacd655da6c62e357f7b08d3677eb1bff14155f01",
+      "size_bytes": 17110,
+      "snapshot_file": "provenance/sources/Aura_VDM__aura_analysis_bundle__scripts__F7_infoflow_scripts__f7_infoflow_higherorder_landscape.py",
+      "extracted_modules": [
+        "voidkit.information.divergence"
+      ],
+      "extraction_mode": "generic primitive extraction",
+      "notes": "Only Jensen-Shannon primitive extracted from domain analysis script.",
+      "provenance_index_match": true,
+      "current_destinations": [
+        "voidkit.info_theory.divergence"
+      ],
+      "reconciliation": "namespace reconciled to existing VoidKit capability owner; mathematical body retained except import/package normalization"
+    }
+  ]
+}

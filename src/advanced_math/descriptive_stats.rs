@@ -49,7 +49,7 @@ pub fn descriptive_stats<'py>(
     ddof: usize,
 ) -> PyResult<Bound<'py, PyDict>> {
     // Validate nan_policy
-    let valid_policies = vec!["propagate", "omit", "raise"];
+    let valid_policies = ["propagate", "omit", "raise"];
     if !valid_policies.contains(&nan_policy) {
         return Err(PyValueError::new_err(format!(
             "Invalid nan_policy '{}'. Must be one of: propagate, omit, raise",
@@ -58,7 +58,7 @@ pub fn descriptive_stats<'py>(
     }
 
     let data_array = data.as_array();
-    if data_array.len() == 0 {
+    if data_array.is_empty() {
         return Err(PyValueError::new_err("Input data is empty"));
     }
 
@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_mean_and_std() {
-        let data = vec![1.0, 2.0, 3.0, 4.0];
+        let data = [1.0, 2.0, 3.0, 4.0];
         let n = data.len();
         let mean = data.iter().sum::<f64>() / n as f64;
 

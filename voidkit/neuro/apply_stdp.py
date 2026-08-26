@@ -1,9 +1,8 @@
 """
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. 
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 """
 
 import numpy as np
@@ -119,7 +118,7 @@ def apply_stdp(
     
     Notes
     -----
-    This function implements the STDP rules for the VDM (Unified Void Dynamics Model) project,
+    This function implements the STDP rules for the VDM project,
     handling both excitatory and inhibitory synapses, eligibility traces, and parameter
     heterogeneity as described in the VDM documentation.
     

@@ -1,10 +1,8 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Dynamical Systems: Fixed Point Finding
@@ -12,7 +10,7 @@ See LICENSE file for full terms.
 //! Finds fixed points (equilibria) of dynamical systems using Newton's method.
 
 use nalgebra::DVector;
-use numpy::{PyArray1, PyArray2, PyArrayMethods, PyReadonlyArray1, PyReadonlyArray2};
+use numpy::{PyArray1, PyArray2, PyReadonlyArray1};
 use pyo3::prelude::*;
 
 /// Finds fixed points (equilibria) of a dynamical system using Newton's method.
@@ -118,6 +116,7 @@ pub fn find_fixed_points<'py>(
 
 #[cfg(test)]
 mod tests {
+    use numpy::PyArrayMethods;
     use super::*;
 
     #[test]

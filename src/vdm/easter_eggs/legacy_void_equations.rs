@@ -127,6 +127,7 @@ pub fn delta_gdsp(
 /// New void state after one time step
 #[pyfunction]
 #[pyo3(signature = (w, t, dt=0.01))]
+#[allow(clippy::manual_clamp)]
 pub fn vdm_step(w: f64, t: f64, dt: f64) -> f64 {
     let alpha_delta = delta_re_vgsp(w, t, None, None, None, true);
     let omega_delta = delta_gdsp(w, t, None, None, None, true);
@@ -167,6 +168,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::manual_range_contains)]
     fn test_vdm_step_stability() {
         // Test that VDM step keeps state in valid range
         let w = 0.5;

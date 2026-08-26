@@ -1,9 +1,7 @@
-// Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+// Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+// SPDX-License-Identifier: BSD-3-Clause
 //
-// This research is protected under a dual-license to foster open academic
-// research while ensuring commercial applications are aligned with the project's ethical principles.
-// Commercial use requires written permission from Justin K. Lietz.
-// See LICENSE file for full terms.
+// Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 
 use petgraph::graph::DiGraph;
 use pyo3::prelude::*;
@@ -96,8 +94,8 @@ pub fn calculate_pagerank(
             .sum();
         
         let dangling_contribution = alpha * dangling_sum / num_nodes as f64;
-        for i in 0..num_nodes {
-            new_pagerank[i] += dangling_contribution;
+        for score in new_pagerank.iter_mut().take(num_nodes) {
+            *score += dangling_contribution;
         }
         
         // Check convergence
@@ -113,16 +111,12 @@ pub fn calculate_pagerank(
     }
     
     // Convert to HashMap
-    pagerank
-        .into_iter()
-        .enumerate()
-        .map(|(i, score)| (i, score))
-        .collect()
+    pagerank.into_iter().enumerate().collect()
 }
 
 /// Python wrapper for calculate_pagerank
 #[pyfunction]
-#[pyo3(name = "calculate_pagerank")]
+#[pyo3(name = "calculate_pagerank", signature = (edges, num_nodes, alpha=None, max_iterations=None, tolerance=None))]
 pub fn calculate_pagerank_py(
     edges: Vec<(usize, usize)>,
     num_nodes: usize,

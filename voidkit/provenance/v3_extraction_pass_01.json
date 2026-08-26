@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "third_sweep_candidates/tier_a/python/intervals.py",
+      "source_sha256": "c161c02975e9e157cc1b11dd7f4fd3bb57d6c100d490f34e6d6c02809fd43224",
+      "source_bytes": 1968,
+      "voidkit_destination": "voidkit/numerical/interval_roots.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "third_sweep_candidates/tier_a/python/permutation.py",
+      "source_sha256": "9ff7494c534fdc1f96f3115be86ceb75016774d2f6fb56823c1cd56bca4fa808",
+      "source_bytes": 2152,
+      "voidkit_destination": "voidkit/algebra/permutation.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "third_sweep_candidates/tier_a/python/words.py",
+      "source_sha256": "d59a86979b3515c06e7260b3c86268b14b4368efb635af59030217f7f940609d",
+      "source_bytes": 856,
+      "voidkit_destination": "voidkit/algebra/free_group.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "math_candidates/heisenberg.py",
+      "source_sha256": "fdc68df28d9348153b107c477440f105fdaa9adc84c17c79535606b50276c645",
+      "source_bytes": 1124,
+      "voidkit_destination": "voidkit/algebra/heisenberg.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "math_candidates/spectral_ops.py",
+      "source_sha256": "46ef011ba5e0b58e0124a0c8b6978cc652d4added02da2d8798ffe705223d221",
+      "source_bytes": 2581,
+      "voidkit_destination": "voidkit/numerical/spectral.py + voidkit/wave/klein_gordon.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "VDM_Math_Mining_for_VoidKit_v3(1).zip",
+      "source_path": "math_candidates/yinyang_transform.py",
+      "source_sha256": "a7bb89d6710f055dbc8ed01100804e585da71796f4220da2df5c7f5035ddc801",
+      "source_bytes": 2222,
+      "voidkit_destination": "voidkit/spatial/yinyang.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    },
+    {
+      "source_archive": "conversation upload",
+      "source_path": "reaction_exact.py",
+      "source_sha256": "0c8d93c2ee24d0884b855651b8bceb557c46b8d2d1accaae4187c866e3a4483b",
+      "source_bytes": 4392,
+      "voidkit_destination": "voidkit/dynamics/logistic.py",
+      "custody": "mathematical kernel preserved; packaging/API normalization documented in extraction report"
+    }
+  ]
+}

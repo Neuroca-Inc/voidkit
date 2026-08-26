@@ -59,7 +59,7 @@ The detailed mining and custody rules live in [`MATH_MINING_TODO.md`](MATH_MININ
 
 ## Current development state
 
-VoidKit is currently at **v0.1.x** and should be treated as an evolving research library.
+VoidKit is currently at **v0.1.0 (pre-alpha)** and should be treated as an evolving research library.
 
 The active math-mining ledger tracks **326 retained code/support sources** from the current VDM Math Mining v3 corpus. Those sources range from general-purpose mathematical utilities to large Phase Calculus families, native kernels, VDM mechanisms, symbolic verification code, and research implementations still awaiting reconciliation.
 
@@ -72,6 +72,8 @@ A few important consequences:
 - mining archives under `sources/` are provenance/research material, not automatically public API.
 
 For the current extraction state and planned work, see [`MATH_MINING_TODO.md`](MATH_MINING_TODO.md).
+
+The prior validated extraction work is now restored in two custody-preserving passes. The first covers algebra, interval/spectral/Klein-Gordon, Yin-Yang, and exact-logistic primitives. The second reconciles the 27-module ore-extraction family into current capability owners, including PDE, statistics, information theory, graph, wave/Noether, recurrence, topology, signal, thermodynamics, special-function, and variational tools. Duplicate historical namespaces were deliberately not recreated.
 
 ## Installation
 
@@ -94,9 +96,16 @@ Optional dependency groups can be installed as needed:
 python -m pip install -e ".[symbolic]"
 python -m pip install -e ".[graphs]"
 python -m pip install -e ".[tda]"
+python -m pip install -e ".[vdm]"
 ```
 
-Python 3.9+ is currently supported by the package metadata.
+For a full research checkout, including all current optional Python dependencies:
+
+```bash
+python -m pip install -e ".[full]"
+```
+
+Python 3.9+ is supported by the package metadata. `pyproject.toml` is the dependency and package-metadata authority; `requirements.txt` is only a convenience full-development environment.
 
 ## A small current example
 
@@ -128,9 +137,11 @@ The repository is intentionally broader than the original VDM-oriented README su
 ```text
 voidkit/
 ├── advanced_math/
+├── algebra/
 ├── causal_inference/
 ├── clustering/
 ├── dynamical_systems/
+├── dynamics/
 ├── evolutionary/
 ├── fractal_analysis/
 ├── fractional_calculus/
@@ -142,11 +153,18 @@ voidkit/
 ├── optimization/
 ├── ot/
 ├── pathway_analysis/
+├── pde/
 ├── phase_calculus/
+├── provenance/
+├── recurrence/
 ├── rmt/
 ├── sde/
 ├── semantic/
+├── signal/
 ├── soc_analysis/
+├── special/
+├── stats/
+├── structure/
 ├── spatial/
 ├── stochastic/
 ├── structural_plasticity/
@@ -154,7 +172,10 @@ voidkit/
 ├── tda/
 ├── thermodynamics/
 ├── time_series/
-└── vdm/
+├── topology/
+├── variational/
+├── vdm/
+└── wave/
 ```
 
 The exact module organization will continue to improve as mined capabilities are reconciled and promoted.
@@ -194,11 +215,11 @@ Standard mathematics belongs here when a centralized, tested implementation is u
 
 The standard is usefulness plus mathematical custody, not novelty theater and not reinvention for its own sake.
 
-## License
+## License and citation
 
-VoidKit is distributed under the repository's dual research/commercial license.
+VoidKit is licensed under the **BSD 3-Clause License**. See [`LICENSE`](LICENSE) for the controlling terms.
 
-The license is intended to support open academic research while reserving commercial use for written permission. See [`LICENSE`](LICENSE) for the controlling terms.
+If VoidKit materially contributes to research or published work, please cite the software and, when applicable, the originating research for the specific method used. GitHub and citation-aware tooling can read the preferred software citation from [`CITATION.cff`](CITATION.cff). Method-level provenance remains important: an authored VDM or Phase Calculus method should retain the citation and research lineage associated with that method rather than being credited only as a generic utility.
 
 ## Neuroca
 
@@ -208,4 +229,4 @@ Repository: https://github.com/Neuroca-Inc/voidkit
 
 ---
 
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025-2026 Justin K. Lietz and Neuroca, Inc.

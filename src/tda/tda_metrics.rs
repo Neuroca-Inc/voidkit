@@ -1,16 +1,14 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use pyo3::Bound;
-use numpy::{PyReadonlyArray2, PyArrayMethods};
+use numpy::PyReadonlyArray2;
 
 /// Calculates TDA metrics from persistence diagrams.
 ///
@@ -96,8 +94,6 @@ pub fn calculate_tda_metrics<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use approx::assert_relative_eq;
 
     // Note: Tests requiring Python/numpy integration are disabled pending
     // test infrastructure updates for PyO3 0.22 API

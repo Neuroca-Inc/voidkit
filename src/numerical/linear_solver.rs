@@ -69,7 +69,7 @@ pub fn linear_system_solver<'py>(
         )));
     }
 
-    if rows == 0 || b.len() == 0 {
+    if rows == 0 || b.is_empty() {
         return Err(PyValueError::new_err("Empty arrays are not valid inputs"));
     }
 
@@ -109,7 +109,6 @@ pub fn linear_system_solver<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]

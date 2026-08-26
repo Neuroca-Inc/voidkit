@@ -1,16 +1,14 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList};
+use pyo3::types::PyList;
 use pyo3::Bound;
-use numpy::{PyReadonlyArray2, PyArrayMethods};
+use numpy::PyReadonlyArray2;
 use std::collections::HashSet;
 
 /// Constructs a Vietoris-Rips complex from a set of points up to a given dimension.
@@ -30,6 +28,7 @@ use std::collections::HashSet;
 /// points = np.array([[0.0, 0.0], [1.0, 0.0], [0.5, 0.866]])
 /// complex = construct_vietoris_rips(points, 1.5, max_dim=2)
 /// ```
+#[allow(clippy::needless_range_loop)]
 #[pyfunction]
 #[pyo3(signature = (points, max_edge_length, max_dim=2))]
 pub fn construct_vietoris_rips<'py>(
@@ -145,7 +144,6 @@ fn generate_combinations(n: usize, k: usize, current: &mut Vec<usize>, start: us
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     // Note: Tests requiring Python/numpy integration are disabled pending
     // test infrastructure updates for PyO3 0.22 API

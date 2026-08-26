@@ -48,6 +48,7 @@ use pyo3::types::PyTuple;
 /// y0 = np.array([1.0])
 /// sol = numerical_ode_solver(decay, t_span, y0, args=(0.1,))
 /// ```
+#[allow(clippy::too_many_arguments)]
 #[pyfunction]
 #[pyo3(signature = (fun, t_span, y0, t_eval=None, args=None, method="RK45", rtol=1e-3, atol=1e-6))]
 pub fn numerical_ode_solver(
@@ -76,7 +77,7 @@ pub fn numerical_ode_solver(
     }
 
     let y0_array = y0.as_array();
-    if y0_array.len() == 0 {
+    if y0_array.is_empty() {
         return Err(PyValueError::new_err(
             "The 'y0' parameter must not be empty.",
         ));
@@ -89,7 +90,7 @@ pub fn numerical_ode_solver(
     }
 
     // Validate method
-    let valid_methods = vec!["RK45", "RK4", "Euler"];
+    let valid_methods = ["RK45", "RK4", "Euler"];
     if !valid_methods.contains(&method) {
         return Err(PyValueError::new_err(format!(
             "Invalid method '{}'. Valid methods are: RK45, RK4, Euler",
@@ -181,6 +182,7 @@ pub fn numerical_ode_solver(
 }
 
 /// Runge-Kutta 4/5 adaptive step size method
+#[allow(clippy::manual_clamp)]
 fn rk45_adaptive<F>(
     f: &F,
     t0: f64,

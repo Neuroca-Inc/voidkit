@@ -1,0 +1,59 @@
+name: Rust quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Show toolchain
+        run: |
+          python --version
+          rustc --version
+          cargo --version
+          cargo clippy --version
+      - name: Clippy with warnings denied
+        env:
+          PYO3_PYTHON: python
+          RUSTFLAGS: -D warnings
+        run: cargo clippy --locked --lib --tests -- -D warnings
+      - name: Run all Rust targets with warnings denied
+        env:
+          PYO3_PYTHON: python
+          RUSTFLAGS: -D warnings
+        run: cargo test --locked --all-targets
+
+  native-wheel:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Maturin
+        run: python -m pip install "maturin>=1.9,<2.0"
+      - name: Build native wheel without compiler warnings
+        env:
+          PYO3_PYTHON: python
+          RUSTFLAGS: -D warnings
+        run: ./tools/build_rust_wheel.sh

@@ -94,7 +94,6 @@ pub fn calculate_jacobian<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
@@ -104,12 +103,12 @@ mod tests {
         // J = [[2, 3], [1, -1]]
 
         let x = vec![1.0, 1.0];
-        let f0 = vec![2.0 * x[0] + 3.0 * x[1], x[0] - x[1]];
+        let f0 = [2.0 * x[0] + 3.0 * x[1], x[0] - x[1]];
 
         let epsilon = 1e-6;
         let mut x_plus = x.clone();
         x_plus[0] += epsilon;
-        let f_plus = vec![2.0 * x_plus[0] + 3.0 * x_plus[1], x_plus[0] - x_plus[1]];
+        let f_plus = [2.0 * x_plus[0] + 3.0 * x_plus[1], x_plus[0] - x_plus[1]];
 
         let df_dx0 = (f_plus[0] - f0[0]) / epsilon;
         let df_dx1 = (f_plus[1] - f0[1]) / epsilon;

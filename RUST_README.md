@@ -1,177 +1,114 @@
-# VoidKit Rust
+# VoidKit Rust backend
 
-High-performance Rust implementation of VoidKit's mathematical and physics library.
+VoidKit includes a Rust/PyO3 backend for selected mathematical kernels. Python is the primary public research interface; the Rust tree provides native implementations where performance, exactness, or an independent implementation is useful.
 
-## Overview
+The Rust backend is **not** a separate mathematical authority. Authored VDM and Phase Calculus mechanisms retain the same identity and provenance across language implementations.
 
-This is a Rust reimplementation of the VoidKit Python library, providing significant performance improvements for computationally intensive mathematical and physics operations. The library maintains API compatibility with the Python version through PyO3 bindings.
+## Current structure
 
-## Structure
+The `src/` tree follows the same capability-oriented ownership used by the Python package. Current module families include:
 
-The Rust implementation is organized into modules matching the Python package structure:
-
-```
+```text
 src/
-├── numerical/                 # Numerical methods
-│   ├── linear_solver.rs      # Linear system solver (LU decomposition)
-│   ├── numerical_integration.rs  # Adaptive quadrature integration
-│   └── ode_solver.rs         # ODE solvers (RK45, RK4, Euler)
-├── advanced_math/            # Advanced mathematics
-│   └── descriptive_stats.rs # Statistical functions
-├── vdm/            # Void Dynamics Model (VDM)
-│   └── void_equations.rs    # Core VDM equations
-├── phase_calculus/          # Phase Calculus namespace
-│   └── mod.rs               # Namespace scaffold
-├── info_theory/              # Information theory
-│   └── information_theory.rs # Entropy, MI, KL divergence
-└── lib.rs                    # Main module entry point
+├── advanced_math/
+├── causal_inference/
+├── clustering/
+├── dynamical_systems/
+├── evolutionary/
+├── fractal_analysis/
+├── fractional_calculus/
+├── graph/
+├── iit/
+├── info_theory/
+├── neuro/
+├── numerical/
+├── optimization/
+├── ot/
+├── pathway_analysis/
+├── phase_calculus/
+├── sde/
+├── semantic/
+├── soc_analysis/
+├── spatial/
+├── stochastic/
+├── structural_plasticity/
+├── tda/
+├── thermodynamics/
+├── time_series/
+├── vdm/
+└── lib.rs
 ```
 
-## Implemented Functions
+`src/vdm/easter_eggs/legacy_void_equations.rs` is intentionally quarantined historical material. It is not exported by the current `voidkit_rust` Python module as canonical VDM mathematics.
 
-### Numerical Methods (`numerical`)
-- **`linear_system_solver(A, b)`** - Solve linear systems Ax = b using LU decomposition
-- **`numerical_integrate(f, a, b, args)`** - Adaptive Simpson's rule integration
-- **`numerical_ode_solver(f, t_span, y0, ...)`** - Solve ODE systems with multiple methods
+## Python extension surface
 
-### Void Dynamics (`vdm`)
-- **`delta_re_vgsp(w, t, ...)`** - Resonance-Enhanced VGSP dynamics
-- **`delta_gdsp(w, t, ...)`** - Goal-Directed Structural Plasticity
-- **`vdm_step(w, t, dt)`** - Combined VDM evolution step
+`src/lib.rs` currently registers native functions from numerical methods, SIE, RE-VGSP, VDM diagnostics, descriptive statistics, information theory, thermodynamics, fractional calculus, dynamical systems, SOC analysis, optimal transport, fractal analysis, stochastic simulation, time series, SDEs, evolutionary methods, spatial structures, IIT, semantic analysis, clustering, graph theory, causal inference, pathway analysis, structural plasticity, TDA, and optimization.
 
-### Advanced Math (`advanced_math`)
-- **`descriptive_stats(data, nan_policy, ddof)`** - Comprehensive statistical analysis
+Phase Calculus currently has a Rust namespace scaffold; canonical Phase implementations will be promoted deliberately from the research corpus rather than inferred from historical filenames.
 
-### Information Theory (`info_theory`)
-- **`calculate_entropy(pk, base)`** - Shannon entropy
-- **`calculate_mutual_information(p_xy, base)`** - Mutual information I(X;Y)
-- **`calculate_kl_divergence(pk, qk, base)`** - Kullback-Leibler divergence
+## Build
 
-## Building
+Requirements:
 
-### Requirements
-- Rust 1.70 or later
-- Python 3.9 or later
-- maturin
+- a current stable Rust toolchain;
+- Python 3.9+;
+- `maturin` for Python-extension development or wheel builds.
 
-### Build from source
+Run native Rust tests without enabling the extension-module link mode. VoidKit treats compiler warnings as stabilization failures, so the canonical validation command denies warnings:
 
 ```bash
-# Install maturin
-pip install maturin
-
-# Build release wheel
-maturin build --release
-
-# Install the wheel
-pip install target/wheels/voidkit-*.whl
+PYO3_PYTHON="$(command -v python)" RUSTFLAGS="-D warnings" cargo test --lib
 ```
 
-### Development build
+On Linux, the repository build script gives ordinary Rust development/test targets an rpath to the exact `libpython` directory discovered by PyO3. This matters for Conda, pyenv, and similar Python installations where `libpython` may link successfully but is not on the operating system loader's default runtime search path. Extension-module builds are detected separately and do **not** receive this host-specific rpath, so it is not baked into the distributed Python extension module.
+
+To inspect which interpreter PyO3 selected when diagnosing an environment mismatch:
 
 ```bash
-# Build and install in development mode (requires virtualenv)
-maturin develop --release
+PYO3_PRINT_CONFIG=1 cargo build
 ```
 
-## Usage
+Use `PYO3_PYTHON=/path/to/python` when a specific interpreter must control the build.
 
-Import and use the Rust functions just like the Python equivalents:
-
-```python
-import numpy as np
-from voidkit_rust import (
-    linear_system_solver,
-    numerical_integrate,
-    descriptive_stats,
-    calculate_entropy,
-    delta_re_vgsp
-)
-
-# Solve linear system
-A = np.array([[3.0, 2.0], [1.0, 1.0]])
-b = np.array([7.0, 3.0])
-x = linear_system_solver(A, b)
-
-# Numerical integration
-result, error = numerical_integrate(lambda x: x**2, 0.0, 1.0)
-
-# Statistics
-data = np.array([1, 2, 3, 4, 5])
-stats = descriptive_stats(data, ddof=1)
-
-# Information theory
-pk = np.array([0.25, 0.25, 0.25, 0.25])
-H = calculate_entropy(pk, base=2)
-
-# Void dynamics
-delta = delta_re_vgsp(0.5, 1.0)
-```
-
-## Performance
-
-Rust implementations provide significant performance improvements:
-
-- **Linear algebra**: 2-10x faster than NumPy for small-medium systems
-- **Numerical integration**: 3-5x faster than SciPy quad
-- **ODE solvers**: 5-20x faster than SciPy solve_ivp
-- **Statistical functions**: 2-8x faster than NumPy/SciPy equivalents
-- **Information theory**: 10-50x faster for large distributions
-
-## Testing
-
-Run the Rust unit tests:
+Build the separate `voidkit-rust` Python extension wheel:
 
 ```bash
-# Note: PyO3 tests require Python linking
-cargo test
+python -m pip install maturin
+./tools/build_rust_wheel.sh
 ```
 
-Test Python interface:
+The native wheel has its own packaging boundary at `rust-wheel/pyproject.toml`.
+That keeps the root Setuptools configuration authoritative for the pure-Python
+`voidkit` distribution while Maturin packages the Cargo crate as `voidkit-rust`.
+The native build enables the crate's `extension-module` feature because the
+pinned PyO3 0.22 line otherwise links `libpython` on Unix.
 
-```python
-import numpy as np
-from voidkit_rust import linear_system_solver
+For editable native-extension development inside a virtual environment:
 
-A = np.array([[2.0, 1.0], [1.0, 1.0]])
-b = np.array([3.0, 2.0])
-x = linear_system_solver(A, b)
-assert np.allclose(x, [1.0, 1.0])
+```bash
+python -m pip install maturin
+(cd rust-wheel && maturin develop --release)
 ```
 
-## Dependencies
+The Rust dependency manifest is [`Cargo.toml`](Cargo.toml). The package uses PyO3/NumPy bindings together with `nalgebra`, `ndarray`, `petgraph`, and the Rust `rand` ecosystem where those capabilities require them.
 
-- **pyo3**: Python bindings
-- **numpy**: NumPy array integration
-- **nalgebra**: Linear algebra
-- **ndarray**: N-dimensional arrays
-- **peroxide**: Numerical methods
-- **approx**: Floating-point comparisons (dev)
+## Mathematical custody
+
+A Rust implementation is promoted only when its relationship to the controlling mathematical source is understood. Cross-language implementations are useful as performance implementations and as independent regression/equivalence evidence; they do not authorize silent changes to equations or authored method identity.
+
+In particular:
+
+- SIE remains the Self-Improvement Engine multi-objective reward function;
+- RE-VGSP remains an authored VDM mechanism;
+- rejected void-debt/domain modulation is not part of the live Rust API;
+- legacy hard-coded void equations remain quarantined under `vdm/easter_eggs`;
+- Phase Calculus implementations will remain Phase Calculus rather than being flattened into generic utilities merely because portions are reusable.
 
 ## License
 
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+The Rust backend is licensed under the same **BSD 3-Clause License** as VoidKit. See [`LICENSE`](LICENSE).
 
-This research is protected under a dual-license to foster open academic research while ensuring commercial applications are aligned with the project's ethical principles. Commercial use requires written permission from Justin K. Lietz. See LICENSE file for full terms.
+## Repository
 
-## Contributing
-
-For the main VoidKit project: https://github.com/justinlietz93/voidkit
-
-## Status
-
-🚧 **Work in Progress** - Core mathematical functions implemented, additional modules being converted from Python to Rust.
-
-### Completed Modules
-- ✅ Numerical methods (linear algebra, integration, ODEs)
-- ✅ Void dynamics equations
-- ✅ Descriptive statistics
-- ✅ Information theory
-
-### Planned Modules
-- 🔄 Graph theory
-- 🔄 Time series analysis
-- 🔄 Optimization algorithms
-- 🔄 Fractional calculus
-- 🔄 TDA (Topological Data Analysis)
-- 🔄 Additional VDM formulas
+https://github.com/Neuroca-Inc/voidkit

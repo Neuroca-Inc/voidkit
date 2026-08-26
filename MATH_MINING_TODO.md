@@ -48,7 +48,7 @@ These labels are **not quality rankings**. A known method can still be an excell
 ## Snapshot totals
 
 - Retained mining code/support files tracked in this document: **326 / 326**.
-- Current ledger status counts: **2 completed, 9 started, 207 planned, 108 not started**.
+- Current ledger status counts: **8 completed, 3 started, 207 planned, 108 not started**.
 - The 326-file ledger is intentionally exhaustive: every file under `math_candidates/`, `new_candidates/`, `third_sweep_candidates/`, `support_dependencies/`, and `third_sweep_support/` appears below exactly once.
 - v3 itself reports 11 promoted Tier-A, 10 promoted Tier-B, 3 new support dependencies, and 326 total retained code files after duplicate/supersedence review.
 
@@ -81,13 +81,13 @@ These labels are **not quality rankings**. A known method can still be an excell
 | Void-debt/domain modulation | **COMPLETED** | `removed` | Explicitly rejected from live VoidKit. Do not reintroduce `domain_modulation`. |
 | Phase Calculus namespace | **STARTED** | `voidkit/phase_calculus` | Namespace exists; mathematical implementation is still largely unpopulated. |
 | Phase-native π spigot / packet streamer family | **PLANNED** | `voidkit/phase_calculus/pi_stream.py` + certification support | Treat as an authored method family, not a generic `pi()` helper. Reconcile original/direct/v3/v5-v8 Python and native C implementations; preserve sequential generation, packet streaming, certification/safe-digit bounds, million-digit bank generation, certified-bank random access, and SymPy/Chudnovsky/Ramanujan controls as distinct capabilities. Novelty is currently **UNASSESSED**, not presumed absent. |
-| Finite permutations | **STARTED** | `voidkit/algebra/permutation.py` | Clean extraction exists in prior v3 pass but is not merged into the current repository. |
-| Free-group words | **STARTED** | `voidkit/algebra/free_group.py` | Clean extraction exists in prior v3 pass but is not merged. |
-| Discrete Heisenberg group | **STARTED** | `voidkit/algebra/heisenberg.py` | Clean extraction exists in prior v3 pass but is not merged. |
-| Interval root finding / Lambert-W bracketing | **STARTED** | `voidkit/numerical/interval_roots.py` | Clean extraction exists in prior v3 pass but is not merged. |
-| Periodic spectral gradient/Laplacian | **STARTED** | `voidkit/numerical/spectral.py` | Clean extraction exists in prior v3 pass but is not merged. |
-| Klein-Gordon Verlet / energy tools | **STARTED** | `voidkit/wave/klein_gordon.py` | Extracted from `spectral_ops.py` in prior v3 pass but not merged. |
-| Yin-Yang spherical transforms | **STARTED** | `voidkit/spatial/yinyang.py` | Clean extraction exists in prior v3 pass but is not merged. |
+| Finite permutations | **COMPLETED** | `voidkit/algebra/permutation.py` | Restored from the validated v3 extraction pass; provenance receipt and behavioral tests are merged. |
+| Free-group words | **COMPLETED** | `voidkit/algebra/free_group.py` | Restored from the validated v3 extraction pass with behavioral regression coverage. |
+| Discrete Heisenberg group | **COMPLETED** | `voidkit/algebra/heisenberg.py` | Restored from the validated v3 extraction pass with group-law/inverse/commutator tests. |
+| Interval root finding / Lambert-W bracketing | **COMPLETED** | `voidkit/numerical/interval_roots.py` | Restored from the validated v3 extraction pass with positive/negative bracket tests. |
+| Periodic spectral gradient/Laplacian | **COMPLETED** | `voidkit/numerical/spectral.py` | Restored from `spectral_ops.py`; periodic-mode derivative identities are regression-tested. |
+| Klein-Gordon Verlet / energy tools | **COMPLETED** | `voidkit/wave/klein_gordon.py` | Restored from the validated `spectral_ops.py` extraction; zero-distance and short-step energy checks are merged. |
+| Yin-Yang spherical transforms | **COMPLETED** | `voidkit/spatial/yinyang.py` | Restored from the validated v3 extraction pass; Cartesian round-trip is regression-tested. |
 | 3-D pseudospectral incompressible Navier-Stokes | **PLANNED** | `voidkit/pde/navier_stokes.py` | Priority-1 mining target: FFT derivatives, dealiasing, incompressibility projection, curl, RHS, RK4, shell diagnostics. |
 | Graph mass-gap / pulse-speed diagnostics | **PLANNED** | `voidkit/graph/propagation.py` | Priority-1 target from `diagnostics.py`. |
 | Quintic root certification | **PLANNED** | `voidkit/numerical/algebraic_roots.py` | Consolidate three overlapping certificate/validation sources into one exact/numeric API. |
@@ -125,7 +125,7 @@ These labels are **not quality rankings**. A known method can still be an excell
 | Core algebra / solver infrastructure | 0 | 0 | 0 | 9 | 9 |
 | Counterfactual echo / metriplectic evaluation | 0 | 0 | 0 | 2 | 2 |
 | Derived physics / exact model constructions | 0 | 0 | 4 | 12 | 16 |
-| Discrete algebra / groups | 0 | 3 | 0 | 0 | 3 |
+| Discrete algebra / groups | 3 | 0 | 0 | 0 | 3 |
 | Discrete geometry / lattice refinement | 0 | 0 | 0 | 1 | 1 |
 | Exact Fibonacci / balanced refinement | 0 | 0 | 1 | 0 | 1 |
 | Exact arbitrary-width arithmetic | 0 | 0 | 1 | 0 | 1 |
@@ -134,12 +134,12 @@ These labels are **not quality rankings**. A known method can still be an excell
 | Graph correlation / propagation diagnostics | 0 | 0 | 1 | 0 | 1 |
 | Legacy VDM equations / domain modulation | 1 | 0 | 0 | 0 | 1 |
 | Metrology / saturation analysis | 0 | 0 | 0 | 1 | 1 |
-| Other retained mathematical research code | 0 | 1 | 21 | 8 | 30 |
-| PDE / spectral / wave solvers | 0 | 1 | 1 | 1 | 3 |
+| Other retained mathematical research code | 1 | 0 | 21 | 8 | 30 |
+| PDE / spectral / wave solvers | 1 | 0 | 1 | 1 | 3 |
 | Phase Calculus / QBL / Orthad | 0 | 0 | 149 | 0 | 149 |
 | Projection / lifted-state linear algebra | 0 | 0 | 0 | 8 | 8 |
 | Research boundary / completeness algorithms | 0 | 0 | 0 | 2 | 2 |
-| Spatial coordinates / Yin-Yang transforms | 0 | 1 | 0 | 1 | 2 |
+| Spatial coordinates / Yin-Yang transforms | 1 | 0 | 0 | 1 | 2 |
 | Support dependencies | 0 | 0 | 7 | 0 | 7 |
 | Symbolic physics / identity verification | 0 | 0 | 6 | 37 | 43 |
 | Symbolic/enumerative derivation machinery | 0 | 0 | 1 | 15 | 16 |
@@ -154,21 +154,25 @@ These are **search targets**, not assumptions that a new implementation should b
 
 | Potential gap / external source family | Status | What to do |
 |---|---|---|
-| Exact logistic finite-time flow + logarithmic first integral | **STARTED** | Prior extraction exists as `voidkit/dynamics/logistic.py`; restore and reconcile with current repo. |
-| Conservative graph/PDE flux + AVF/discrete-gradient reaction-diffusion | **STARTED** | Prior ore extraction exists (`pde/diffusion.py`, `pde/reaction_diffusion.py`); not merged into current repo. |
-| Crank-Nicolson / Strang reaction-diffusion splitting | **STARTED** | Prior ore extraction exists (`pde/implicit_rd.py`); not merged. |
-| Sparse/asynchronous census-clock fields | **STARTED** | Prior ore extraction exists (`pde/asynchronous.py`); not merged. |
-| GENERIC/metriplectic structure checks | **STARTED** | Prior ore extraction exists (`structure/generic.py`); not present in the v3 mining archive as the same source family. |
-| Linear irreversible thermodynamics / Onsager-Casimir tools | **STARTED** | Prior ore extraction exists (`thermo/lit.py`); not merged. |
-| Correlated-series statistics / blocking / IAT / ESS | **STARTED** | Prior ore extraction exists (`stats/correlated.py`); not merged. |
-| Heavy-tail inference and model comparison | **STARTED** | Prior ore extraction exists (`stats/heavytail.py`); not merged. |
-| Gaussian information measures, complexity, divergences | **STARTED** | Prior ore extraction exists under `information/`; not merged. |
-| Recurrence quantification analysis | **STARTED** | Prior ore extraction exists (`recurrence/rqa.py`); not merged. |
-| Graph causality/event DAG, graph matching, graph spectral utilities | **STARTED** | Prior ore extraction exists under `graph/`; not merged. |
-| Klein-Gordon Noether diagnostics / exact spectral advection | **STARTED** | Prior ore extraction exists under `wave/`; not merged. |
-| Cylindrical eigenmode/root solver | **STARTED** | Prior ore extraction exists (`special/cylindrical.py`); not merged. |
-| Discrete Euler-Lagrange verifier | **STARTED** | Prior ore extraction exists (`variational/discrete_el.py`); not merged. |
-| Memory-steering graph field and routing law | **STARTED** | Prior ore extraction exists (`graph/memory.py`); not merged. |
+| Exact logistic finite-time flow + logarithmic first integral | **COMPLETED** | Restored as `voidkit/dynamics/logistic.py` with exact-flow composition, invariant, and linear-limit regression coverage; provenance points to the authored `reaction_exact.py` source. |
+| Conservative graph/PDE flux + AVF/discrete-gradient reaction-diffusion | **COMPLETED** | Restored under `voidkit/pde/{diffusion,reaction_diffusion}.py`; source custody retained and prior behavioral tests merged. |
+| Crank-Nicolson / Strang reaction-diffusion splitting | **COMPLETED** | Restored as `voidkit/pde/implicit_rd.py`; exact-reaction/zero-diffusion and convergence checks are merged. |
+| Sparse/asynchronous census-clock fields | **COMPLETED** | Restored as `voidkit/pde/asynchronous.py` with its exact reaction and local conservative flux update semantics preserved. |
+| GENERIC/metriplectic structure checks | **COMPLETED** | Restored as `voidkit/structure/generic.py`; the source-defined Jacobi residual remains explicitly a proxy screen rather than a full proof. |
+| Linear irreversible thermodynamics / Onsager-Casimir tools | **COMPLETED** | Restored under the existing owner `voidkit/thermodynamics/lit.py`; duplicate `voidkit.thermo` namespace was not created. |
+| Correlated-series statistics / blocking / IAT / ESS | **COMPLETED** | Restored as `voidkit/stats/correlated.py`; computation is separated from historical repository I/O. |
+| Heavy-tail inference and model comparison | **COMPLETED** | Restored as `voidkit/stats/heavytail.py`; pandas is optional and only required by DataFrame-returning helpers. |
+| Gaussian information measures, complexity, divergences | **COMPLETED** | Restored under existing ownership as `voidkit/info_theory/{gaussian,complexity,divergence}.py`; no duplicate `voidkit.information` namespace. |
+| Recurrence quantification analysis | **COMPLETED** | Restored as `voidkit/recurrence/rqa.py`. |
+| Graph causality/event DAG, graph matching, graph spectral utilities | **COMPLETED** | Restored under `voidkit/graph/` alongside the existing graph owner. |
+| Klein-Gordon Noether diagnostics / exact spectral advection | **COMPLETED** | Restored as `voidkit/wave/{noether,advection}.py`; the earlier `kg.py` capability was reconciled into the existing `klein_gordon.py` owner rather than duplicated. |
+| Cylindrical eigenmode/root solver | **COMPLETED** | Restored as `voidkit/special/cylindrical.py` with the source-defined finite-radius model scope retained. |
+| Discrete Euler-Lagrange verifier | **COMPLETED** | Restored as `voidkit/variational/discrete_el.py`. |
+| Memory-steering graph field and routing law | **COMPLETED** | Restored as `voidkit/graph/memory.py`; historical derivation references and equations remain attached. |
+| Basic statistical/avalanche utilities | **COMPLETED** | Restored as `voidkit/stats/basic.py`; pandas is imported only by the duration-grouping helper that needs it. |
+| Event/time-series diagnostics | **COMPLETED** | Restored under existing ownership as `voidkit/time_series/events.py`; duplicate `voidkit.timeseries` namespace was not created. |
+| VR-graph cycle rank / empirical p-values / FDR | **COMPLETED** | Restored as `voidkit/topology/vr_graph.py`; cycle rank remains explicitly graph-level, not full simplicial persistent homology. |
+| Signal ridge extraction / PSD slope tools | **COMPLETED** | Restored as `voidkit/signal/{ridges,spectral}.py`; GWPy remains an optional runtime dependency only for its dedicated loader. |
 | Canonical Phase Calculus compact coordinate `(A, k, b_A)` | **NOT STARTED** | The current Phase namespace is a stub and the mining corpus has many ancestors, but no obvious retained source is named as the finalized compact-coordinate contract. Search the Phase Calculus research/custody packages before implementing. |
 | Phase Calculus canonical lifted-object API | **NOT STARTED** | Research likely contains the final object/Orthad/custody definitions; mining archive mostly contains experiment generations and partial kernels. Establish canonical source before exposing API. |
 | Full CEG / assisted-echo mechanism | **NOT STARTED** | v3 mining retains `echo_gates.py` and `echo_metrics.py`, but not the complete assisted-echo implementation previously seen in VDM physics sources. Recover that source before designing a reusable experiment API. |
@@ -201,7 +205,7 @@ If these questions are not yet answerable, the item is **not ready for destructi
 
 ## Recommended execution order
 
-1. **Restore prior clean extractions first**: permutations, free groups, Heisenberg, interval roots, spectral/KG, Yin-Yang, then the 27-module ore extraction family. These already have working extraction artifacts and should not be remined.
+1. **Restore prior clean extractions first — COMPLETED**: the validated v3 extraction batch and the 27-module ore-extraction family are now merged and reconciled to current namespace ownership. Do not remine these capabilities unless new source evidence changes the mathematical contract.
 2. **Build Phase Calculus deliberately**: establish the canonical research snapshot, then implement QBL/refinement → local coordinates → Orthad → transport → FQM/cocycle/Jacobian custody → certificates/traversal. Do not dump historical phase scripts into the package.
 3. **Extract Priority-1 general solvers**: Navier-Stokes pseudospectral core, graph propagation diagnostics, quintic certification, arbitrary-width exact arithmetic, symbolic/enumerative search.
 4. **Audit VDM-specific sources**: preserve SIE/RE-VGSP identity, keep rejected debt modulation out, and separate truly general lattice/graph math from VDM semantics additively.
@@ -301,7 +305,7 @@ Every retained file is listed here. `SHA-256` is abbreviated to 12 hex character
 | 86 | `math_candidates/gdsp.py` | VDM authored learning/reward mechanisms | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: GDSPActuator, run_gdsp_synaptic_actuator, get_gdsp_status_report, _AdaptiveThresholds, __init__, _grow_connection_across_gap, _prune_co… | `2790fb3aa8ae` |
 | 87 | `math_candidates/global_system.py` | Graph / sparse field dynamics | **PLANNED** | explicitly promoted/prioritized by mining audit | reusable mathematical/dynamical algorithm or solver component; top-level kernels: ADC, SIE, should_run, _kmeans_1d, _cohesion_score, run, _ensure_state, _normalize … | `ea04cdd82445` |
 | 88 | `math_candidates/growth_arbiter.py` | Graph / sparse field dynamics | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: GrowthArbiter, __init__, clear_history, update_metrics, accumulate_and_decide | `a1ac414a48a3` |
-| 89 | `math_candidates/heisenberg.py` | Discrete algebra / groups | **STARTED** | unmerged extraction: voidkit/algebra/heisenberg.py | reusable mathematical/dynamical algorithm or solver component; top-level kernels: HState, multiply, inverse, commutator, visible, order_charge | `fdc68df28d93` |
+| 89 | `math_candidates/heisenberg.py` | Discrete algebra / groups | **COMPLETED** | merged extraction: `voidkit/algebra/heisenberg.py` | reusable mathematical/dynamical algorithm or solver component; top-level kernels: HState, multiply, inverse, commutator, visible, order_charge | `fdc68df28d93` |
 | 90 | `math_candidates/invariants.py` | VDM invariants / runtime metrics | **PLANNED** | explicitly promoted/prioritized by mining audit | reusable mathematical/dynamical algorithm or solver component; top-level kernels: _percentile, check_site_constant_of_motion, compute_memory_groups, logistic_motion_invariant_value, check_logistic_motion_invariant, ki… | `0d43c94a058a` |
 | 91 | `math_candidates/kg_reference_adapter.py` | PDE / spectral / wave solvers | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: KGReferenceAdapter, __init__, initial_state, forward_step, reverse_step, energy_norm_delta, random_correction, assisted_correction … | `0815aaa53094` |
 | 92 | `math_candidates/lifted_quintic_certifier.py` | Algebraic root certification | **PLANNED** | explicitly promoted/prioritized by mining audit | equation-bearing symbolic/numeric research implementation; top-level kernels: XiHat, Pi, B_pair, B_lift, lexicographic_roots, normalization_scale, normalize_root, refine_to_half_width … | `123ca733d35e` |
@@ -450,7 +454,7 @@ Every retained file is listed here. `SHA-256` is abbreviated to 12 hex character
 | 235 | `math_candidates/signals.py` | Core algebra / solver infrastructure | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: _safe_getattr, compute_b1_z, sie_valence, compute_cohesion, compute_vt_metrics, snapshot_numbers, apply_b1_detector, compute_active_edg… | `1b4518c98c76` |
 | 236 | `math_candidates/solver.py` | Core algebra / solver infrastructure | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: SolverConfig, StepLog, SolveResult, LiftedDescentSolver, to_jsonable, __init__, fit | `9507832a3eb3` |
 | 237 | `math_candidates/sparse_connectome.py` | Graph / sparse field dynamics | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: SparseConnectome, __init__, _build_alias, _alias_draw, stimulate_indices, _void_traverse, step, _active_edge_iter … | `488c9406585b` |
-| 238 | `math_candidates/spectral_ops.py` | PDE / spectral / wave solvers | **STARTED** | unmerged extraction: voidkit/numerical/spectral.py + voidkit/wave/klein_gordon.py | reusable mathematical/dynamical algorithm or solver component; top-level kernels: _omega, spectral_laplacian, spectral_grad, kg_verlet_step, stiffness, h_energy_norm_delta | `46ef011ba5e0` |
+| 238 | `math_candidates/spectral_ops.py` | PDE / spectral / wave solvers | **COMPLETED** | merged extraction: `voidkit/numerical/spectral.py` + `voidkit/wave/klein_gordon.py` | reusable mathematical/dynamical algorithm or solver component; top-level kernels: _omega, spectral_laplacian, spectral_grad, kg_verlet_step, stiffness, h_energy_norm_delta | `46ef011ba5e0` |
 | 239 | `math_candidates/stepper.py` | Core algebra / solver infrastructure | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: compute_step_and_metrics | `a9afcae5dd4c` |
 | 240 | `math_candidates/structural_homeostasis.py` | Graph / sparse field dynamics | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: _compute_affinity, _select_bridge_pairs, perform_structural_homeostasis | `10a037746bad` |
 | 241 | `math_candidates/sympy_checks.py` | Symbolic physics / identity verification | **NOT STARTED** | retained as ore; no current extraction commitment yet | equation-bearing symbolic/numeric research implementation; top-level kernels: main, q | `891cf9d58956` |
@@ -476,7 +480,7 @@ Every retained file is listed here. `SHA-256` is abbreviated to 12 hex character
 | 261 | `math_candidates/vdm_dynamics_regressor.py` | VDM field equations / telegraph dynamics | **NOT STARTED** | retained as ore; no current extraction commitment yet | reusable mathematical/dynamical algorithm or solver component; top-level kernels: Macro, BalancedPair, CompletionGerm, PhaseCoordinates, Q, B, L, R … | `b69a13c375ee` |
 | 262 | `math_candidates/void_equations.py` | VDM field equations / telegraph dynamics | **PLANNED** | explicitly promoted/prioritized by mining audit | reusable mathematical/dynamical algorithm or solver component; top-level kernels: LatticeEdge, LatticeDefinition, _canonical_stencil, _stencil_offsets, _neighbor_class, _offset_distance_sq, _geometry_weight, _axis_sec… | `2fc93d880b05` |
 | 263 | `math_candidates/xigraph_sympy_audit.py` | Symbolic physics / identity verification | **NOT STARTED** | retained as ore; no current extraction commitment yet | equation-bearing symbolic/numeric research implementation; top-level kernels: lowbit, xi_word_step, audit_bit_carry, audit_balanced_corridor, audit_resolution_order, main | `301addd716d1` |
-| 264 | `math_candidates/yinyang_transform.py` | Spatial coordinates / Yin-Yang transforms | **STARTED** | unmerged extraction: voidkit/spatial/yinyang.py | equation-bearing symbolic/numeric research implementation; top-level kernels: create_component_grid, transform_yin_to_yang, transform_yang_to_yin | `a7bb89d6710f` |
+| 264 | `math_candidates/yinyang_transform.py` | Spatial coordinates / Yin-Yang transforms | **COMPLETED** | merged extraction: `voidkit/spatial/yinyang.py` | equation-bearing symbolic/numeric research implementation; top-level kernels: create_component_grid, transform_yin_to_yang, transform_yang_to_yin | `a7bb89d6710f` |
 | 265 | `new_candidates/asm/qbl_b_u64.S` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | direct arithmetic/numerical/QBL/Orthad implementation or independent reference | `efd43afe1e30` |
 | 266 | `new_candidates/asm/qbl_inspect_u64.S` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | direct arithmetic/numerical/QBL/Orthad implementation or independent reference | `e9362d57516c` |
 | 267 | `new_candidates/asm/qbl_step_u64.S` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | direct arithmetic/numerical/QBL/Orthad implementation or independent reference | `6b865544a4be` |
@@ -515,12 +519,12 @@ Every retained file is listed here. `SHA-256` is abbreviated to 12 hex character
 | 300 | `third_sweep_candidates/tier_a/c/qbl_orthad_query.c` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | Read-side exact Orthad/QBL query formulas and relation cardinalities without enumeration. | `2dbd91e11263` |
 | 301 | `third_sweep_candidates/tier_a/python/candidate_local_coordinate.py` | Other retained mathematical research code | **PLANNED** | explicitly promoted/prioritized by mining audit | Exact local-coordinate encoding/decoding, threshold oracle, capacity/reachability. | `620584cf9db9` |
 | 302 | `third_sweep_candidates/tier_a/python/deep_wide_sweep.py` | Other retained mathematical research code | **PLANNED** | explicitly promoted/prioritized by mining audit | Exact layered-state math, phase moments, cross energy, chiral radius and tridiagonal relation-gap solver. | `784cbcded781` |
-| 303 | `third_sweep_candidates/tier_a/python/intervals.py` | Other retained mathematical research code | **STARTED** | unmerged extraction: voidkit/numerical/interval_roots.py | Deterministic real interval root solver and real Lambert-W / x+sin bracketing. | `c161c02975e9` |
+| 303 | `third_sweep_candidates/tier_a/python/intervals.py` | Other retained mathematical research code | **COMPLETED** | merged extraction: `voidkit/numerical/interval_roots.py` | Deterministic real interval root solver and real Lambert-W / x+sin bracketing. | `c161c02975e9` |
 | 304 | `third_sweep_candidates/tier_a/python/jacobian_sheet_custody.py` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | Exact symbolic Jacobian/sheet custody, weighted-fiber identity and covariance checks. | `63b4bb70d04a` |
 | 305 | `third_sweep_candidates/tier_a/python/orthad_closed_form.py` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | Execution-free exact Orthad closed form / random access, Fibonacci fast doubling, charts, transfers, cardinalities. | `198e4ffb34d6` |
-| 306 | `third_sweep_candidates/tier_a/python/permutation.py` | Discrete algebra / groups | **STARTED** | unmerged extraction: voidkit/algebra/permutation.py | Generic immutable finite permutation operations: composition, inverse, cycle decomposition. | `9ff7494c534f` |
+| 306 | `third_sweep_candidates/tier_a/python/permutation.py` | Discrete algebra / groups | **COMPLETED** | merged extraction: `voidkit/algebra/permutation.py` | Generic immutable finite permutation operations: composition, inverse, cycle decomposition. | `9ff7494c534f` |
 | 307 | `third_sweep_candidates/tier_a/python/run_head_to_head.py` | Symbolic/enumerative derivation machinery | **PLANNED** | explicitly promoted/prioritized by mining audit | Expression-tree symbolic-regression / enumerative EML search machinery. | `39f45c4a6251` |
-| 308 | `third_sweep_candidates/tier_a/python/words.py` | Discrete algebra / groups | **STARTED** | unmerged extraction: voidkit/algebra/free_group.py | Generic free-group word inversion, reduction, and commutator construction. | `d59a86979b35` |
+| 308 | `third_sweep_candidates/tier_a/python/words.py` | Discrete algebra / groups | **COMPLETED** | merged extraction: `voidkit/algebra/free_group.py` | Generic free-group word inversion, reduction, and commutator construction. | `d59a86979b35` |
 | 309 | `third_sweep_candidates/tier_a/rust/lib (55th copy).rs` | Exact arbitrary-width arithmetic | **PLANNED** | explicitly promoted/prioritized by mining audit | no_std arbitrary-width exact arithmetic: BigNat, BigInt, GaussianRational, gcd/division/encoding. | `e0ba9c4a6378` |
 | 310 | `third_sweep_candidates/tier_b/asm/xi_step_endogenous_floor.S` | Phase Calculus / QBL / Orthad | **PLANNED** | explicitly promoted/prioritized by mining audit | Assembly endogenous-floor update and balanced arithmetic/completion germ. | `6ac41aba595a` |
 | 311 | `third_sweep_candidates/tier_b/c/xigraph_engine.c` | Graph / sparse field dynamics | **PLANNED** | explicitly promoted/prioritized by mining audit | Deterministic graph dynamics: compatibility, debt absorption, edge strengthening, 2D resolution and node birth. | `a684622e122b` |

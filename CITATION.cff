@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: >-
+  If VoidKit materially contributes to research or published work, please cite
+  the software and, when applicable, the originating research for the specific
+  method used.
+title: VoidKit
+type: software
+authors:
+  - family-names: Lietz
+    given-names: Justin K.
+    affiliation: Neuroca, Inc.
+version: 0.1.0
+repository-code: https://github.com/Neuroca-Inc/voidkit
+url: https://github.com/Neuroca-Inc/voidkit
+license: BSD-3-Clause
+keywords:
+  - scientific computing
+  - computational mathematics
+  - numerical methods
+  - phase calculus
+  - void dynamics

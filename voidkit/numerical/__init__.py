@@ -1,25 +1,22 @@
-"""
-VoidKit Numerical Methods (staging home)
-- linear  -> proxies voidkit.linear_system_solver
-- integration -> proxies voidkit.numerical_integrate
-- ode -> proxies voidkit.numerical_ode_solver
+"""VoidKit numerical methods.
 
-This provides a stable namespace (voidkit.numerical.*) while legacy modules
-remain at top-level. After verification, the code can be physically moved here.
+Legacy numerical adapters remain available through lazy proxy names while newer
+research-extracted primitives live directly under this namespace.
 """
-
 from __future__ import annotations
 
 import importlib
 from types import ModuleType
 from typing import Dict
 
-__all__ = ["linear", "integration", "ode"]
+__all__ = ["linear", "integration", "ode", "interval_roots", "spectral"]
 
 _PROXY_MAP: Dict[str, str] = {
     "linear": "voidkit.linear_system_solver",
     "integration": "voidkit.numerical_integrate",
     "ode": "voidkit.numerical_ode_solver",
+    "interval_roots": "voidkit.numerical.interval_roots",
+    "spectral": "voidkit.numerical.spectral",
 }
 
 

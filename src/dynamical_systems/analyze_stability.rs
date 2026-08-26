@@ -1,18 +1,16 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Dynamical Systems: Stability Analysis
 //!
 //! Analyzes the stability of fixed points by examining eigenvalues of the Jacobian.
 
-use nalgebra::{Complex, DMatrix};
-use numpy::{PyArray1, PyArrayMethods, PyReadonlyArray2};
+use nalgebra::DMatrix;
+use numpy::PyReadonlyArray2;
 use pyo3::prelude::*;
 use std::collections::HashMap;
 
@@ -96,6 +94,7 @@ pub fn analyze_stability<'py>(
 
 #[cfg(test)]
 mod tests {
+    use numpy::PyArrayMethods;
     use super::*;
 
     #[test]
@@ -106,7 +105,6 @@ mod tests {
             // Stable node: both eigenvalues negative
             let jac = vec![vec![-1.0, 0.0], vec![0.0, -2.0]];
 
-            let jac_flat: Vec<f64> = jac.iter().flat_map(|row| row.clone()).collect();
             let jac_py = numpy::PyArray2::from_vec2_bound(py, &jac).unwrap();
 
             let result = analyze_stability(py, jac_py.readonly()).unwrap();

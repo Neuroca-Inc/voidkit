@@ -1,9 +1,7 @@
-// Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+// Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+// SPDX-License-Identifier: BSD-3-Clause
 //
-// This research is protected under a dual-license to foster open academic
-// research while ensuring commercial applications are aligned with the project's ethical principles.
-// Commercial use requires written permission from Justin K. Lietz.
-// See LICENSE file for full terms.
+// Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 
 use ndarray::{Array1, Array2};
 use numpy::{PyArray1, PyArray2, PyArrayMethods};
@@ -116,10 +114,8 @@ fn compute_eigenvalues_symmetric(matrix: &Array2<f64>) -> Vec<f64> {
     }
     
     // For simplicity, we'll use a basic approach:
-    // Compute trace and Frobenius norm to estimate eigenvalue distribution
-    // This is not exact but works for the eigengap heuristic
-    
-    let trace: f64 = (0..n).map(|i| matrix[[i, i]]).sum();
+    // Estimate the eigenvalue distribution from diagonal entries.
+    // This is not exact but works for the current eigengap heuristic.
     
     // Estimate eigenvalues - in practice, you'd use a proper eigensolver
     // For now, return a simplified estimate based on matrix properties

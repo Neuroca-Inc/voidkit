@@ -276,7 +276,6 @@ pub fn information_bottleneck(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
@@ -317,9 +316,9 @@ mod tests {
         let log_base = 2.0_f64.ln();
 
         let mut kl = 0.0;
-        for i in 0..p.len() {
-            if p[i] > 0.0 {
-                kl += p[i] * ((p[i] / p[i]).ln() / log_base);
+        for &probability in &p {
+            if probability > 0.0 {
+                kl += probability * ((probability / probability).ln() / log_base);
             }
         }
 

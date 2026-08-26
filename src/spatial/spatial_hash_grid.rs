@@ -1,10 +1,8 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Spatial Hash Grid Data Structure
@@ -72,7 +70,7 @@ impl SpatialHashGrid {
         self.objects.push((x, y));
 
         // Add to grid
-        self.grid.entry(cell).or_insert_with(Vec::new).push(obj_idx);
+        self.grid.entry(cell).or_default().push(obj_idx);
 
         Ok(obj_idx)
     }
@@ -144,7 +142,7 @@ impl SpatialHashGrid {
         let y = point_arr[1];
         let cell = self.hash_point(x, y);
 
-        Ok(self.grid.get(&cell).map(|v| v.clone()).unwrap_or_default())
+        Ok(self.grid.get(&cell).cloned().unwrap_or_default())
     }
 
     /// Clear all objects from the grid.
@@ -156,6 +154,11 @@ impl SpatialHashGrid {
     /// Get the number of objects in the grid.
     pub fn len(&self) -> usize {
         self.objects.len()
+    }
+
+    /// Return whether the grid contains no objects.
+    pub fn is_empty(&self) -> bool {
+        self.objects.is_empty()
     }
 }
 

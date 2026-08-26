@@ -1,5 +1,5 @@
 """
-Unified Void Dynamics Model (VDM) - Advanced Math package for voidkit.
+VoidKit advanced mathematics package.
 
 Exports:
 - descriptive_stats: compute descriptive statistics for a 1-D numeric sequence
@@ -26,12 +26,3 @@ except Exception as _e:  # pragma: no cover
 
 __all__ = ["descriptive_stats", "symbolic_diff"]
 
-# Optional version exposure (best-effort)
-try:  # Python 3.8+
-    from importlib.metadata import version as _pkg_version  # type: ignore
-    try:
-        __version__ = _pkg_version("voidkit")
-    except Exception:  # pragma: no cover
-        __version__ = "0.0.0"
-except Exception:  # pragma: no cover
-    __version__ = "0.0.0"

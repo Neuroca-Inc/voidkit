@@ -1,18 +1,18 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Stochastic Differential Equation (SDE) Solver
 //!
 //! Solves systems of SDEs using the Euler-Maruyama method.
 
-use numpy::{PyArray1, PyArray2, PyArrayMethods, PyReadonlyArray1};
+use numpy::{PyArray1, PyArray2, PyReadonlyArray1};
 use pyo3::prelude::*;
+
+type SdePyOutput<'py> = (Bound<'py, PyArray1<f64>>, Bound<'py, PyArray2<f64>>);
 use rand::thread_rng;
 use rand_distr::{Distribution, Normal};
 
@@ -42,7 +42,7 @@ pub fn sde_solver<'py>(
     initial_state: PyReadonlyArray1<f64>,
     t_span: (f64, f64),
     dt: f64,
-) -> PyResult<(Bound<'py, PyArray1<f64>>, Bound<'py, PyArray2<f64>>)> {
+) -> PyResult<SdePyOutput<'py>> {
     let (t_start, t_end) = t_span;
 
     if t_end <= t_start {
@@ -124,6 +124,7 @@ pub fn sde_solver<'py>(
 
 #[cfg(test)]
 mod tests {
+    use numpy::PyArrayMethods;
     use super::*;
 
     #[test]

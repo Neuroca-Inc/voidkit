@@ -104,12 +104,11 @@ pub fn calculate_fractal_dimension(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     #[test]
     fn test_linear_regression() {
         // Test linear regression calculation
-        let x = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let x = [1.0, 2.0, 3.0, 4.0, 5.0];
         let y = vec![2.0, 4.0, 6.0, 8.0, 10.0]; // y = 2x
 
         let n = x.len() as f64;

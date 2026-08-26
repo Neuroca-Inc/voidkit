@@ -1,5 +1,5 @@
 """
-Unified Void Dynamics Model (VDM) - Advanced Math: Symbolic differentiation.
+VoidKit Advanced Math: symbolic differentiation.
 
 CLI entry point: `voidkit-diff` (see pyproject [project.scripts]).
 

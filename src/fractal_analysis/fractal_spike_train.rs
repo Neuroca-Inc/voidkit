@@ -1,17 +1,15 @@
 /*
-Copyright © 2025 Justin K. Lietz, Neuroca, Inc. All Rights Reserved.
+Copyright © 2025 Justin K. Lietz, Neuroca, Inc.
+SPDX-License-Identifier: BSD-3-Clause
 
-This research is protected under a dual-license to foster open academic
-research while ensuring commercial applications are aligned with the project's
-ethical principles. Commercial use requires written permission from Justin K. Lietz.
-See LICENSE file for full terms.
+Licensed under the BSD 3-Clause License. See LICENSE in the repository root.
 */
 
 //! Fractal Spike Train Generation
 //!
 //! Generates spike trains based on fractal dynamics.
 
-use numpy::{PyArray1, PyArrayMethods, PyReadonlyArray1};
+use numpy::PyArray1;
 use pyo3::prelude::*;
 use rand::thread_rng;
 use rand::Rng;
@@ -77,6 +75,7 @@ pub fn generate_fractal_spike_train<'py>(
 
 #[cfg(test)]
 mod tests {
+    use numpy::PyArrayMethods;
     use super::*;
 
     #[test]
@@ -84,8 +83,10 @@ mod tests {
         pyo3::prepare_freethreaded_python();
 
         Python::with_gil(|py| {
-            let fractal_dim = 1.5;
-            let k = 10.0;
+            // Make the first 1 ms bin have probability exactly 1.0 so this
+            // stochastic test has a deterministic non-empty lower bound.
+            let fractal_dim = 1.0;
+            let k = 1000.0;
             let tau_f = 100.0;
             let duration = 1000.0;
             let dt = 1.0;
@@ -97,7 +98,7 @@ mod tests {
             let times_arr = times.as_array();
 
             // Should generate some spikes
-            assert!(times_arr.len() > 0);
+            assert!(!times_arr.is_empty());
 
             // All spike times should be within duration
             for &spike_time in times_arr.iter() {

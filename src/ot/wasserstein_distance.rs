@@ -48,7 +48,7 @@ pub fn calculate_wasserstein_distance(
     let u = u_values.as_array();
     let v = v_values.as_array();
 
-    if u.len() == 0 || v.len() == 0 {
+    if u.is_empty() || v.is_empty() {
         return Err(PyValueError::new_err("Input arrays must not be empty"));
     }
 
@@ -147,13 +147,12 @@ pub fn calculate_wasserstein_distance(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
     fn test_identical_distributions() {
         // Wasserstein distance between identical distributions should be 0
-        let u = vec![1.0, 2.0, 3.0];
+        let u = [1.0, 2.0, 3.0];
         let u_w = vec![1.0 / 3.0; 3];
 
         let mut u_sorted: Vec<(f64, f64)> = u.iter().zip(&u_w).map(|(&val, &w)| (val, w)).collect();
@@ -166,11 +165,11 @@ mod tests {
     #[test]
     fn test_shifted_distribution() {
         // Distance between distributions shifted by 1 should be 1
-        let u = vec![0.0, 1.0, 2.0];
-        let v = vec![1.0, 2.0, 3.0];
+        let _u = [0.0, 1.0, 2.0];
+        let _v = [1.0, 2.0, 3.0];
 
         // Both uniform
-        let weight = 1.0 / 3.0;
+        let _weight = 1.0 / 3.0;
 
         // Expected: each point moves distance 1, weighted by 1/3
         // Total = 3 * (1/3) * 1 = 1

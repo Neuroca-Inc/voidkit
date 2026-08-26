@@ -111,6 +111,7 @@ where
 }
 
 /// Recursive adaptive Simpson's rule
+#[allow(clippy::too_many_arguments)]
 fn adaptive_simpson_recursive<F>(
     f: &F,
     a: f64,

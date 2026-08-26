@@ -84,7 +84,6 @@ pub fn caputo_derivative<'py>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use approx::assert_relative_eq;
 
     #[test]
@@ -108,14 +107,14 @@ mod tests {
     #[test]
     fn test_constant_function() {
         // Fractional derivative of a constant should approach zero
-        let f = vec![1.0; 10];
+        let _f = [1.0; 10];
         let alpha: f64 = 0.5;
         let dt: f64 = 1.0;
 
-        let mut result = vec![0.0; 10];
+        let mut result = [0.0; 10];
         let mut coeff = 1.0;
 
-        for i in 0..10 {
+        for (i, result_i) in result.iter_mut().enumerate() {
             let mut summation = 0.0;
             for k in 0..=i {
                 summation += coeff;
@@ -123,7 +122,7 @@ mod tests {
                     coeff *= (k as f64 - alpha) / ((k + 1) as f64);
                 }
             }
-            result[i] = summation / dt.powf(alpha);
+            *result_i = summation / dt.powf(alpha);
             coeff = 1.0; // Reset for next i
         }
 
